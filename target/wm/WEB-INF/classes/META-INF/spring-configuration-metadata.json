@@ -1,0 +1,38 @@
+{
+  "groups": [
+    {
+      "name": "projectfiles",
+      "type": "com.startest.wm.config.ymlFileConfig.YmlFileConfig",
+      "sourceType": "com.startest.wm.config.ymlFileConfig.YmlFileConfig"
+    },
+    {
+      "name": "spring.datasource.postgresql",
+      "type": "javax.sql.DataSource",
+      "sourceType": "com.startest.wm.config.datasource.DataSourceConfig",
+      "sourceMethod": "dataSourcePostgreSql()"
+    },
+    {
+      "name": "userphoto",
+      "type": "com.startest.wm.model.yml.UserPhoto",
+      "sourceType": "com.startest.wm.model.yml.UserPhoto"
+    }
+  ],
+  "properties": [
+    {
+      "name": "projectfiles.projectfile",
+      "type": "java.lang.String",
+      "sourceType": "com.startest.wm.config.ymlFileConfig.YmlFileConfig"
+    },
+    {
+      "name": "projectfiles.projecttemplate",
+      "type": "java.lang.String",
+      "sourceType": "com.startest.wm.config.ymlFileConfig.YmlFileConfig"
+    },
+    {
+      "name": "userphoto.server",
+      "type": "java.lang.String",
+      "sourceType": "com.startest.wm.model.yml.UserPhoto"
+    }
+  ],
+  "hints": []
+}

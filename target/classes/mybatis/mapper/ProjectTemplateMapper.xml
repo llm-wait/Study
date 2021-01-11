@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.ProjectTemplateDao">
+    <sql id="tableFields">
+        template_id,
+        template_name,
+        template_range,
+        template_auther,
+        template_update,
+        template_upoper,
+        remark,
+        template_path,
+        filename
+    </sql>
+
+    <select id="selectProjectTemplateInfoList" parameterType="com.startest.wm.pojo.wm_project_template"
+            resultType="com.startest.wm.pojo.wm_project_template">
+        select
+        <include refid="tableFields"></include>
+        from wm_project_template
+        <where>
+        <if test="template_id!=null and template_id!=''">
+            and template_id=#{template_id}
+        </if>
+        <if test="template_name!=null and template_name!=''">
+            and template_name like concat('%',#{template_name},'%')
+        </if>
+        </where>
+    </select>
+
+    <select id="getProjectTemplateInfoByID" resultType="com.startest.wm.pojo.wm_project_template">
+        select
+        <include refid="tableFields"></include>
+        from wm_project_template
+        where template_id=#{template_id}
+    </select>
+
+    <insert id="insertProjectTemplateInfo" parameterType="com.startest.wm.pojo.wm_project_template">
+        insert into wm_project_template(
+        <include refid="tableFields"></include>
+        ) values (
+        #{template_id},
+        #{template_name},
+        #{template_range},
+        #{template_auther},
+        #{template_update},
+        #{template_upoper},
+        #{remark},
+        #{template_path},
+        #{filename}
+        )
+    </insert>
+
+    <insert id="insertProjectTemplateByList" parameterType="com.startest.wm.pojo.wm_project_template">
+        insert into wm_project_template(
+        <include refid="tableFields"></include>
+        ) values
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.template_id},
+            #{item.template_name},
+            #{item.template_range},
+            #{item.template_auther},
+            #{item.template_update},
+            #{item.template_upoper},
+            #{item.remark},
+            #{item.template_path},
+            #{item.filename}
+            )
+        </foreach>
+    </insert>
+
+    <update id="updateProjectTemplateInfo" parameterType="com.startest.wm.pojo.wm_project_template">
+        update wm_project_template
+        <trim prefix="set" suffixOverrides=",">
+            <if test="template_name!=null and template_name!=''">
+                template_name=#{template_name},
+            </if>
+            <if test="template_range!=null and template_range!=''">
+                template_range=#{template_range},
+            </if>
+            <if test="template_auther!=null and template_auther!=''">
+                template_auther=#{template_auther},
+            </if>
+            <if test="template_update!=null and template_update!=''">
+                template_update=#{template_update},
+            </if>
+            <if test="template_upoper!=null and template_upoper!=''">
+                template_upoper=#{template_upoper},
+            </if>
+            <if test="remark!=null and remark!=''">
+                remark=#{remark},
+            </if>
+            <if test="template_path!=null and template_path!=''">
+                template_path=#{template_path},
+            </if>
+            <if test="filename!=null and filename!=''">
+                filename=#{filename}
+            </if>
+        </trim>
+        where template_id=#{template_id}
+    </update>
+
+    <update id="updateProjectTemplateFile" parameterType="String">
+        update wm_project_template
+        set
+        filename=#{filename},
+        template_update=#{template_update},
+        template_upoper=#{template_upoper},
+        template_path=#{filePath}
+        where template_id=#{template_id}
+    </update>
+
+    <delete id="deleteProjectTemplateInfo" parameterType="String">
+        delete from wm_project_template where template_id=#{strID}
+    </delete>
+</mapper>

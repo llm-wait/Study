@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.ProjectSubjectDao">
+    <sql id="tableFields">
+        subject_id,
+        project_id,
+        subject_name,
+        subject_budget,
+        subject_received,
+        subject_pay,
+        subject_balance,
+        subject_standard,
+        subject_count,
+        subject_use,
+        subject_describe,
+        remark
+    </sql>
+
+    <select id="selectProjectSubjectInfoList" parameterType="com.startest.wm.pojo.wm_project_subject"
+            resultType="com.startest.wm.pojo.wm_project_subject">
+        select
+        <include refid="tableFields"/>
+        from wm_project_subject
+        <where>
+
+        <if test="subject_id!=null">
+            and subject_id=#{subject_id}
+        </if>
+        <if test="project_id!=null">
+            and project_id=#{project_id}
+        </if>
+        <if test="subject_name!=null">
+            and subject_name like concat('%',#{subject_name},'%')
+        </if>
+        </where>
+    </select>
+
+    <select id="getProjectSubjectInfoByID" resultType="com.startest.wm.pojo.wm_project_subject">
+        select
+        <include refid="tableFields"/>
+        from wm_project_subject
+        where subject_id=#{subID}
+    </select>
+
+    <insert id="insertProjectSubjectInfo" parameterType="com.startest.wm.pojo.wm_project_subject">
+        insert into wm_project_subject(
+        <include refid="tableFields"/>
+        ) values (
+        #{subject_id},
+        #{project_id},
+        #{subject_name},
+        #{subject_budget},
+        #{subject_received},
+        #{subject_pay},
+        #{subject_balance},
+        #{subject_standard},
+        #{subject_count},
+        #{subject_use},
+        #{subject_describe},
+        #{remark}
+        )
+    </insert>
+
+    <update id="updateProjectSubjectInfo" parameterType="com.startest.wm.pojo.wm_project_subject">
+        update wm_project_subject
+        set
+        subject_name=#{subject_name},
+        subject_budget=#{subject_budget},
+        subject_received=#{subject_received},
+        subject_pay=#{subject_pay},
+        subject_balance=#{subject_balance},
+        subject_standard=#{subject_standard},
+        subject_count=#{subject_count},
+        subject_use=#{subject_use},
+        subject_describe=#{subject_describe},
+        remark=#{remark}
+        where subject_id=#{subject_id}
+    </update>
+
+    <delete id="deleteProjectSubjectInfo" parameterType="String">
+        delete from wm_project_subject where subject_id=#{strID}
+    </delete>
+</mapper>

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.TaskCheckDao">
+    <sql id="taskCheckField">
+        check_id,
+        task_id,
+        distribution_type,
+        check_oper,
+        check_maptable,
+        check_error1,
+        check_error2,
+        check_error3,
+        check_error4,
+        check_lost,
+        check_mylevel,
+        remark,
+        check_mapquality,
+        user_id,
+        distribution_id
+    </sql>
+    <!--检索任务质检信息-->
+    <select id="selectTaskCheckListInfo" parameterType="com.startest.wm.pojo.wm_task_check" resultType="com.startest.wm.pojo.wm_task_check">
+        select
+        <include refid="taskCheckField"></include>
+        from wm_task_check
+        <where>
+            <if test="check_id!=null">
+                and check_id=#{check_id}
+            </if>
+            <if test="task_id!=null">
+                and task_id=#{task_id}
+            </if>
+            <if test="distribution_type!=null">
+                and distribution_type=#{distribution_type}
+            </if>
+            <if test="check_oper!=null">
+                and check_oper=#{check_oper}
+            </if>
+        </where>
+        <if test="user_id!=null">
+            and user_id=#{user_id}
+        </if>
+        <if test="distribution_id!=null">
+            and distribution_id=#{distribution_id}
+        </if>
+        <if test="user_duty!=null and task_id!=null and distribution_type!=null">
+            and distribution_id in
+            (
+            select distribution_id from wm_task_distribution
+            where task_index_id=#{task_id} and user_duty=#{user_duty} and product_type=#{distribution_type}
+            )
+        </if>
+    </select>
+
+    <!--插入任务质检信息-->
+    <insert id="insertTaskCheckInfo" parameterType="com.startest.wm.pojo.wm_task_check">
+        insert into wm_task_check(
+        check_id,
+        task_id,
+        distribution_type,
+        check_oper,
+        check_maptable,
+        check_error1,
+        check_error2,
+        check_error3,
+        check_error4,
+        check_lost,
+        check_mylevel,
+        remark,
+        check_mapquality,
+        user_id,
+        distribution_id
+        ) values (
+        #{check_id},
+        #{task_id},
+        #{distribution_type},
+        #{check_oper},
+        #{check_maptable},
+        #{check_error1},
+        #{check_error2},
+        #{check_error3},
+        #{check_error4},
+        #{check_lost},
+        #{check_mylevel},
+        #{remark},
+        #{check_mapquality},
+        #{user_id},
+        #{distribution_id}
+        )
+    </insert>
+    <!--修改任务质检信息-->
+    <update id="updateTaskCheckInfo" parameterType="com.startest.wm.pojo.wm_task_check">
+        update wm_task_check set
+        check_oper=#{check_oper},
+        check_maptable=#{check_maptable},
+        check_error1=#{check_error1},
+        check_error2=#{check_error2},
+        check_error3=#{check_error3},
+        check_error4=#{check_error4},
+        check_lost=#{check_lost},
+        check_mylevel=#{check_mylevel},
+        remark=#{remark},
+        check_mapquality=#{check_mapquality},
+        user_id=#{user_id}
+        where check_id=#{check_id}
+    </update>
+    <!--修改技术修改数量、改成图数量、主要负责人、次要负责人-->
+    <update id="updateTaskEndCheckInfo" parameterType="com.startest.wm.pojo.wm_check_index">
+        update wm_check_index set
+        chart_edit=#{chart_edit},
+        chart_map_edit=#{chart_map_edit},
+        chart_manager=#{chart_manager},
+        chart_manager1=#{chart_manager1}
+        where check_index_id=#{check_index_id}
+    </update>
+    <!--删除任务质检信息-->
+    <delete id="deleteTaskCheckInfo" parameterType="String">
+        delete from wm_task_check where  check_id=#{strID}
+    </delete>
+
+    <select id="getTaskCheckByDisID" resultType="wm_task_check">
+        select * from wm_task_check where distribution_id=#{distributionId}
+    </select>
+
+    <update id="updataTaskCheckByDisID">
+        update wm_task_check set
+        task_id=#{task_id},
+        distribution_type=#{distribution_type},
+        check_oper=#{check_oper},
+        check_maptable =#{check_maptable},
+        <if test="check_error1 != null">
+        check_error1=#{check_error1} ,
+        </if>
+        <if test="check_error2 != null">
+        check_error2=#{check_error2},
+        </if>
+        <if test="check_error3 != null">
+        check_error3=#{check_error3},
+        </if>
+        <if test="check_error4 != null">
+        check_error4=#{check_error4},
+        </if>
+        check_lost=#{check_lost},
+        check_mylevel=#{check_mylevel},
+        check_mapquality =#{check_mapquality},
+        user_id=#{user_id}
+        where distribution_id=#{distribution_id}
+    </update>
+
+    <delete id="deleteTaskCheckByDisId">
+        delete from wm_task_check where  distribution_id=#{disID}
+    </delete>
+
+
+</mapper>

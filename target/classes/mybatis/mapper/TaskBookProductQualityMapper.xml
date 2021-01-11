@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.TaskBookProductQualityDao">
+
+    <sql id="bookfieldlist" >
+        book_id,
+        task_index_id,
+        task_year,
+        book_class,
+        book_name,
+        book_type,
+        book_code,
+        book_words,
+        book_error_workdays,
+        book_quality,
+        book_edit_quality,
+        book_evaluation,
+        quarter_number
+    </sql>
+
+    <!-- 检索书表产品测评信息 -->
+    <select id="selectChartProductQualityList" parameterType="com.startest.wm.pojo.wm_quality_book" resultType="com.startest.wm.pojo.wm_quality_book">
+        select
+        <include refid="bookfieldlist"></include>
+        from wm_quality_book where 1=1
+        <if test="book_class!=null">
+            and book_class=#{book_class}
+        </if>
+        <if test="task_year!=null">
+            and task_year=#{task_year}
+        </if>
+        <if test="quarter_number!=null">
+            and quarter_number=#{quarter_number}
+        </if>
+        <if test="book_evaluation!=null">
+            and book_evaluation=#{book_evaluation}
+        </if>
+    </select>
+
+    <!-- 获取书表产品用户工天统计数据 -->
+    <select id="getUserBookProductTypeWordDays" parameterType="String" resultType="Double">
+
+        select sum(work_days) from wm_task_distribution a,wm_quality_book b where a.task_index_id=b.task_index_id
+        <if test="user_id!=null">
+            and a.user_id=#{userID}
+        </if>
+        <if test="task_year!=null">
+            and b.task_year=#{year}
+        </if>
+        <if test="quarter_number!=null">
+            and b.quarter_number=#{quarterNum}
+        </if>
+        <if test="book_evaluation!=null">
+            and b.book_evaluation=#{state}
+        </if>
+
+    </select>
+
+    <!-- 新增书表产品测评信息 -->
+    <insert id="insertBookQualityInfo" parameterType="com.startest.wm.pojo.wm_quality_book">
+        insert into wm_quality_book(
+        <include refid="bookfieldlist"></include>
+        ) values (
+        #{book_id},
+        #{task_index_id},
+        #{task_year},
+        #{book_class},
+        #{book_name},
+        #{book_type},
+        #{book_code},
+        #{book_words},
+        #{book_error_workdays},
+        #{book_quality},
+        #{book_edit_quality},
+        #{book_evaluation},
+        #{quarter_number}
+        )
+    </insert>
+
+    <!-- 修改书表产品测评信息 -->
+    <update id="updateBookQualityInfo" parameterType="com.startest.wm.pojo.wm_quality_book">
+        update wm_quality_book set
+        task_year=#{task_year},
+        book_class=#{book_class},
+        book_name=#{book_name},
+        book_type=#{book_type},
+        book_code=#{book_code},
+        book_words=#{book_words},
+        book_error_workdays=#{book_error_workdays},
+        book_quality=#{book_quality},
+        book_edit_quality=#{book_edit_quality},
+        book_evaluation=#{book_evaluation},
+        quarter_number=#{quarter_number} where book_id=#{book_id}
+    </update>
+
+    <!-- 修改书表产品测评的统计信息 -->
+    <update id="updateBookQualityValueInfo" parameterType="com.startest.wm.pojo.wm_quality_book">
+        update wm_quality_book set
+        book_error_workdays=#{book_error_workdays},
+        book_quality=#{book_quality},
+        book_edit_quality=#{book_edit_quality},
+        book_evaluation=#{book_evaluation},
+        quarter_number=#{quarter_number} where book_id=#{book_id}
+    </update>
+
+    <!-- 删除书表产品测评信息 -->
+    <delete id="deleteBookQualityInfo" parameterType="String">
+        delete from wm_quality_book where  book_id=#{strID}
+    </delete>
+</mapper>

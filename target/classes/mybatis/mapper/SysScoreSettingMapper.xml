@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.SysScoreSettingDao">
+
+    <sql id="scoreSettingSql">
+        id,hgl,yxl,yxgtb,gctz,gctc,jsxgz,jsxgc,ywgt,gtb,ywnl,gztd,cxcql,xlcj,bwcj,year
+    </sql>
+
+    <!--新增考评成绩计算参数-->
+    <insert id="insertScoreSetting">
+        insert into sys_score_setting(
+        <include refid="scoreSettingSql"/>
+        )values (
+        #{id},#{hgl},#{yxl},#{yxgtb},#{gctz},#{gctc},#{jsxgz},#{jsxgc},#{ywgt},#{gtb},#{ywnl},#{gztd},#{cxcql},#{xlcj},#{bwcj},#{year}
+        )
+    </insert>
+
+    <!--更新考评成绩计算参数-->
+    <update id="updateScoreSetting">
+        update sys_score_setting set
+        hgl=#{hgl},
+        yxl=#{yxl},
+        yxgtb=#{yxgtb},
+        gctz=#{gctz},
+        gctc=#{gctc},
+        jsxgz=#{jsxgz},
+        jsxgc=#{jsxgc},
+        ywgt=#{ywgt},
+        gtb=#{gtb},
+        ywnl=#{ywnl},
+        gztd=#{gztd},
+        cxcql=#{cxcql},
+        xlcj=#{xlcj},
+        bwcj=#{bwcj},
+        year=#{year}
+        where id=#{id}
+    </update>
+
+    <!--删除考评成绩计算参数-->
+    <delete id="deleteScoreSetting" parameterType="java.lang.String">
+        delete from sys_score_setting where id=#{id}
+    </delete>
+
+    <!--根据ID查询考评成绩计算参数-->
+    <select id="queryScoreSettingByID" resultType="com.startest.wm.pojo.sys_score_setting">
+        select
+        <include refid="scoreSettingSql"/>
+        from sys_score_setting
+        where  id=#{id}
+    </select>
+
+    <!--根据年份查询考评成绩计算参数-->
+    <select id="queryScoreSettingByYear" resultType="com.startest.wm.pojo.sys_score_setting">
+        select
+        <include refid="scoreSettingSql"/>
+        from sys_score_setting
+        where year=#{year}
+    </select>
+
+    <!--查询所有考评成绩计算参数-->
+    <select id="queryAllScoreSetting" resultType="com.startest.wm.pojo.sys_score_setting">
+        select
+        <include refid="scoreSettingSql"/>
+        from sys_score_setting
+    </select>
+</mapper>

@@ -1,0 +1,15 @@
+com\startest\wm\controller\TaskOthersControllerTest.class
+com\startest\wm\controller\TaskClassControllerTest.class
+com\startest\wm\dao\TaskIndexDaoTest.class
+com\startest\wm\TmallApplicationTests.class
+com\startest\wm\controller\TestControllerTest.class
+com\startest\wm\dao\TaskInfoDaoTest.class
+com\startest\wm\controller\ProjectInfoControllerTest.class
+com\startest\wm\dao\SysDataOperationDaoTest.class
+com\startest\wm\ArrayTestClass$ren.class
+com\startest\wm\controller\TaskIndexControllerTest.class
+com\startest\wm\ArrayTestClass.class
+com\startest\wm\service\impl\TaskDistributionImpTest.class
+com\startest\wm\controller\TaskDeptControllerTest.class
+com\startest\wm\DateTestClass.class
+com\startest\wm\controller\TaskInfoControllerTest.class

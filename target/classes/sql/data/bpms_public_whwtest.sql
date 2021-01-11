@@ -1,0 +1,9 @@
+INSERT INTO public.whwtest (id, score, rank, pdjg, zb) VALUES (1001, 80, null, null, 'A');
+INSERT INTO public.whwtest (id, score, rank, pdjg, zb) VALUES (1004, 89, null, null, 'A');
+INSERT INTO public.whwtest (id, score, rank, pdjg, zb) VALUES (1005, 96, null, null, 'B');
+INSERT INTO public.whwtest (id, score, rank, pdjg, zb) VALUES (1006, 98, null, null, 'B');
+INSERT INTO public.whwtest (id, score, rank, pdjg, zb) VALUES (1003, 84, null, null, 'B');
+INSERT INTO public.whwtest (id, score, rank, pdjg, zb) VALUES (1002, 80, null, null, 'A');
+INSERT INTO public.whwtest (id, score, rank, pdjg, zb) VALUES (2001, 100, '1', 'A', 'A');
+INSERT INTO public.whwtest (id, score, rank, pdjg, zb) VALUES (2002, 98, '2', 'B', 'B');
+INSERT INTO public.whwtest (id, score, rank, pdjg, zb) VALUES (2003, 96, '3', 'C', 'C');

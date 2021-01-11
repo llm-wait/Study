@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.SysLoginDao">
+
+    <!--插入登录账户信息-->
+    <insert id="addSysLogin" parameterType="com.startest.wm.pojo.sys_login">
+    insert into
+    sys_login(id,login_name,login_pwd,dept_id,dept_name,role_name)
+    values (#{id},#{login_name},#{login_pwd},#{dept_id},#{dept_name},#{role_name})
+    </insert>
+
+    <!--更新登录账户信息-->
+    <update id="updateSysLogin" parameterType="com.startest.wm.pojo.sys_login">
+        update sys_login
+        <trim prefix="set" suffixOverrides=",">
+            <if test="login_name!=null">login_name=#{login_name},</if>
+            <if test="login_pwd!=null">login_pwd=#{login_pwd},</if>
+             dept_id=#{dept_id},
+             dept_name=#{dept_name},
+             role_name=#{role_name}
+        </trim>
+        where id=#{id}
+    </update>
+
+    <!--根据ID删除登录账户-->
+    <delete id="deleteSysLoginByID" parameterType="java.lang.String">
+        delete from sys_login where id=#{id}
+    </delete>
+
+    <!--查询所有登录账户-->
+    <select id="querySysLogin" parameterType="java.lang.String" resultType="com.startest.wm.pojo.sys_login">
+        select
+            id,login_name,login_pwd,dept_id,dept_name,role_name
+        from sys_login
+        where login_name=#{login_name} and login_pwd=#{login_pwd}
+    </select>
+
+    <!--查询所有登录账户-->
+    <select id="querySysLoginAll" resultType="com.startest.wm.pojo.sys_login">
+        select
+            id,login_name,login_pwd,dept_id,dept_name,role_name
+        from sys_login
+    </select>
+
+    <!--根据登录名查询登录账户-->
+    <select id="querySysLoginByName" resultType="com.startest.wm.pojo.sys_login">
+        select
+            id,login_name,login_pwd,dept_id,dept_name,role_name
+        from sys_login
+        where login_name=#{login_name}
+    </select>
+
+    <!--根据ID查询登录账户-->
+    <select id="querySysLoginByID" resultType="com.startest.wm.pojo.sys_login">
+        select
+            id,login_name,login_pwd,dept_id,dept_name,role_name
+        from sys_login
+        where id=#{id}
+    </select>
+</mapper>

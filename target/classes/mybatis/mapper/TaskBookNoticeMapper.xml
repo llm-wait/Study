@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.TaskBookNoticeDao">
+    <sql id="noticeField">
+        notice_id,
+        task_index_id,
+        notice_year,
+        notice_quarter,
+        notice_type,
+        notice_number,
+        notice_item,
+        first_error,
+        error_count,
+        notice_quality
+    </sql>
+
+    <!-- 检索通告产品质量评测信息 -->
+    <select id="selectBookNoticeProductQualityList" parameterType="com.startest.wm.pojo.wm_book_notice" resultType="com.startest.wm.pojo.wm_book_notice">
+        select
+        <include refid="noticeField"></include> from wm_book_notice where 1=1
+         <if test="notice_id!=null">
+            and notice_id =#{notice_id}
+         </if>
+        <if test="task_index_id!=null">
+            and task_index_id =#{task_index_id}
+        </if>
+        <if test="notice_year!=null">
+            and notice_year =#{notice_year}
+        </if>
+        <if test="notice_quarter!=null">
+            and notice_quarter =#{notice_quarter}
+        </if>
+        <if test="notice_type!=null">
+            and notice_type =#{notice_type}
+        </if>
+        <if test="notice_quality!=null">
+            and notice_quality =#{notice_quality}
+        </if>
+    </select>
+
+    <!-- 新增通告产品质量评测信息 -->
+    <insert id="insertBookNoticeProductQualityInfo" parameterType="com.startest.wm.pojo.wm_book_notice">
+        insert into wm_book_notice(
+        <include refid="noticeField"></include>
+        )
+        values (
+        #{notice_id},
+        #{task_index_id},
+        #{notice_year},
+        #{notice_quarter},
+        #{notice_type},
+        #{notice_number},
+        #{notice_item},
+        #{first_error},
+        #{error_count},
+        #{notice_quality}
+        )
+    </insert>
+
+    <!-- 修改通告产品质量评测信息 -->
+    <update id="updateBookNoticeProductQualityInfo" parameterType="com.startest.wm.pojo.wm_book_notice">
+        update wm_book_notice set
+        notice_year=#{notice_year},
+        notice_quarter=#{notice_quarter},
+        notice_type=#{notice_type},
+        notice_number=#{notice_number},
+        notice_item=#{notice_item},
+        first_error=#{first_error},
+        error_count=#{error_count},
+        notice_quality=#{notice_quality} where notice_id=#{notice_id}
+    </update>
+
+    <!-- 删除通告产品质量评测信息 -->
+    <delete id="deleteBookNoticeProductQualityInfo" parameterType="String">
+        delete from wm_book_notice where notice_id=#{strID}
+    </delete>
+</mapper>

@@ -1,0 +1,21 @@
+spring:
+  datasource:
+#    配置数据源类型
+    type: com.alibaba.druid.pool.DruidDataSource
+  profiles:
+    active: dev
+#  thymeleaf:
+#    prefix: classpath:/templates/
+#    suffix: .html
+#    encoding: UTF-8
+#    cache: false
+
+mybatis:
+  config-location: classpath:mybatis/mybatis-config.xml
+  mapper-locations: classpath:mybatis/mapper/*.xml
+
+#项目文件存放位置
+projectfiles:
+  projecttemplate: C:\wm\project\template
+  projectfile: C:\wm\project\file
+

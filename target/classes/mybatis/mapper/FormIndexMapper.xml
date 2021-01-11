@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.FormIndexDao">
+    <sql id="formSearchField">
+        form_index_id,
+        index_id,
+        form_id,
+        form_type,
+        submit_oper,
+        submit_unit,
+        submit_date
+         </sql>
+    <!--检索编务信息列表-->
+    <select id="selectFormInfo" parameterType="com.startest.wm.model.TaskFormModel" resultType="com.startest.wm.model.TaskFormModel">
+        select a.*,b.task_year,b.task_name from wm_form_index a,wm_task_index b where
+        a.index_id=b.index_id
+        <if test="task_name!=null">
+            and b.task_name like concat('%',#{task_name},'%')
+        </if>
+        <if test="task_year!=null">
+            and b.task_year like concat('%',#{task_year},'%')
+        </if>
+        <if test="submit_unit!=null">
+            and a.submit_unit like concat('%',#{submit_unit},'%')
+        </if>
+        <if test="examine_state!=null">
+            and a.examine_state=#{examine_state}
+        </if>
+    </select>
+    <!--新增编务信息-->
+    <insert id="insertFormInfo"  parameterType="com.startest.wm.pojo.wm_form_index" >
+        insert into wm_form_index (
+        <include refid="formSearchField"></include>
+        ) values (
+        #{form_index_id},
+        #{index_id},
+        #{form_id},
+        #{form_type},
+        #{submit_oper},
+        #{submit_unit},
+        to_date(#{submit_date},'YYYY-MM-DD HH24:MI:SS')
+        );
+    </insert>
+<!--    #{remark}-->
+    <!--修改编务信息-->
+    <update id="updateFormInfo" parameterType="com.startest.wm.pojo.wm_form_index">
+        update wm_form_index set
+        form_type=#{form_type},
+        submit_oper=#{submit_oper},
+        submit_unit=#{submit_unit},
+        submit_date=#{submit_date}
+
+        where form_index_id=#{form_index_id}
+    </update>
+    <!--修改审核状态-->
+    <update id="updateFromExamineState" parameterType="String">
+        update wm_form_index set
+        examine_state=#{strState},
+        examine_opinion=#{strOpinion}
+        where form_index_id=#{strID}
+    </update>
+    <!--删除审核信息-->
+    <delete id="deleteFormInfo" parameterType="String">
+        delete from wm_form_index where form_index_id=#{strID}
+    </delete>
+</mapper>

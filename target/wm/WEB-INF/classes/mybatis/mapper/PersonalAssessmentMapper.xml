@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.PersonalAssessmentDao">
+
+
+    <select id="personalSelect" parameterType="com.startest.wm.pojo.wm_quality_user"
+    resultType="com.startest.wm.pojo.wm_quality_user">
+        select * from "wm_quality_user"
+        <where>
+            <if test="quarter != null and quarter != ''">
+                and quarter=#{quarter}
+            </if>
+            <if test="task_year != null and task_year != ''">
+                and task_year=#{task_year}
+            </if>
+            <if test="dept_id != null and dept_id != ''">
+                and dept_id =#{dept_id}
+            </if>
+            <if test="dept_name != null and dept_name != ''">
+                and dept_name=#{dept_id}
+            </if>
+            <if test="product_type != null and product_type != ''">
+                and product_type=#{product_type}
+            </if>
+            <if test="performance_evaluation != null and performance_evaluation != ''">
+                and performance_evaluation=#{performance_evaluation}
+            </if>
+            <if test="product_class != null and product_class != ''">
+                and product_class=#{product_class}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectNameByStation" resultType="java.lang.String">
+        SELECT  c.user_name  from  sys_dept a,sys_dept_station_user b,sys_user  c where
+        a.dept_id=b.dept_id  and b.user_id=c.user_id
+        <if test="dept_id != null and dept_id != ''">
+          and  a.dept_id=#{dept_id}
+        </if>
+        <if test="dept_name != null and dept_name != ''">
+           and a.dept_name=#{dept_name}
+        </if>
+    </select>
+
+    <select id="selectGroupLeader" resultType="java.lang.String">
+        SELECT a.user_name FROM "sys_user" a, sys_dept_station_user b,sys_station c where  c.station_id=b.station_id and b.user_id=a.user_id       and c.station_name='组长'
+    </select>
+</mapper>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.ProjectDeptDao">
+    <sql id="fields">
+        project_dept_id,
+        project_id,
+        dept_id
+    </sql>
+
+    <select id="selectProjectDeptList" parameterType="com.startest.wm.pojo.wm_project_dept" resultType="com.startest.wm.pojo.wm_project_dept">
+        select
+        <include refid="fields"></include>
+        from wm_project_dept where 1=1
+        <if test="project_dept_id!=null">
+            and project_dept_id=#{project_dept_id}
+        </if>
+        <if test="project_id!=null">
+            and project_id=#{project_id}
+        </if>
+        <if test="dept_id!=null">
+            and dept_id=#{dept_id}
+        </if>
+    </select>
+
+    <insert id="insertProjectDeptInfo" parameterType="com.startest.wm.pojo.wm_project_dept">
+        insert into wm_project_dept(
+        <include refid="fields"></include>
+        ) values
+        <foreach collection="list" item="bean" index="index" separator=",">
+        (
+        #{bean.project_dept_id},
+        #{bean.project_id},
+        #{bean.dept_id}
+        )
+        </foreach>
+    </insert>
+
+    <delete id="deleteProjectDeptInfo" parameterType="com.startest.wm.pojo.wm_project_dept">
+        delete from wm_project_dept where 1=1
+        <if test="project_dept_id!=null">
+            and project_dept_id=#{project_dept_id}
+        </if>
+        <if test="project_id!=null">
+            and project_id=#{project_id}
+        </if>
+        <if test="dept_id!=null">
+            and dept_id=#{dept_id}
+        </if>
+    </delete>
+</mapper>

@@ -1,0 +1,20 @@
+spring:
+  #  数据源配置
+  datasource:
+    postgresql:
+      driver-class-name: org.postgresql.Driver
+      url: jdbc:postgresql://114.242.60.27:5432/bpms
+      username: wm
+      password: wm123
+
+# 运行时端口
+server:
+  port: 8081
+
+# 用户头像设置
+userphoto:
+  server: 114.242.60.27
+
+
+
+

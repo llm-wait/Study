@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.FormBookDao">
+    <sql id="formbookfield">
+        form_id,
+        book_jcode,
+        book_code,
+        book_name,
+        book_standard_code,
+        book_unit_post,
+        book_edit,
+        book_post_title,
+        remark
+    </sql>
+    <select id="selectFormBookListInfo" parameterType="com.startest.wm.pojo.wm_form_book" resultType="com.startest.wm.pojo.wm_form_book">
+        select
+        <include refid="formbookfield"></include>
+        from wm_form_book where 1=1
+        <if test="form_id!=null">
+            and form_id=#{form_id}
+        </if>
+    </select>
+
+    <select id="selectFormBookInfoByTaskIndexID"  parameterType="String" resultType="com.startest.wm.pojo.wm_form_book">
+        select
+        a.form_id,
+        a.book_jcode,
+        a.book_code,
+        a.book_name,
+        a.book_standard_code,
+        a.book_unit_post,
+        a.book_edit,
+        a.book_post_title,
+        a.remark
+        from wm_form_book a,wm_form_index b where a.form_id=b.form_id
+        and b.index_id=#{strID}
+    </select>
+
+    <insert id="addFormBookInfo" parameterType="com.startest.wm.pojo.wm_form_book">
+        insert into wm_form_book (
+        <include refid="formbookfield"></include>
+        ) values (
+        #{form_id},
+        #{book_jcode},
+        #{book_code},
+        #{book_name},
+        #{book_standard_code},
+        #{book_unit_post},
+        #{book_edit},
+        #{book_post_title},
+        #{remark}
+        )
+    </insert>
+    <update id="updateFormBookInfo" parameterType="com.startest.wm.pojo.wm_form_book">
+        update wm_form_book set
+        book_jcode=#{book_jcode},
+        book_code=#{book_code},
+        book_name=#{book_name},
+        book_standard_code=#{book_standard_code},
+        book_unit_post=#{book_unit_post},
+        book_edit=#{book_edit},
+        book_post_title=#{book_post_title},
+        remark=#{remark}
+        where form_id=#{form_id}
+    </update>
+    <delete id="deleteFormBookInfo" parameterType="String">
+        delete from wm_form_index where form_id=#{strID};
+        delete from wm_form_book where form_id=#{strID};
+    </delete>
+</mapper>

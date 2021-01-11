@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.TaskOthersDao">
+    <sql id="taskOthersField">
+        otask_id,
+        index_id,
+        otask_code,
+        otask_name,
+        otask_source,
+        otask_maker,
+        otask_unit,
+        otask_people,
+        task_start_date,
+        otask_content,
+        otask_count,
+        otask_works
+    </sql>
+    <!--检索应急保障任务信息-->
+    <select id="selectTaskOthersInfo" parameterType="com.startest.wm.pojo.wm_task_others"
+            resultType="com.startest.wm.pojo.wm_task_others">
+        select
+        <include refid="taskOthersField">
+        </include>
+        from wm_task_others
+        <where>
+            <if test="otask_id != null and otask_id != ''">
+                and otask_id = #{otask_id}
+            </if>
+            <if test="index_id != null and index_id != ''">
+                and index_id = #{index_id}
+            </if>
+            <if test="otask_name != null and otask_name != ''">
+                and otask_name like concat('%', #{otask_name}, '%')
+            </if>
+            <if test="otask_code != null and otask_code != ''">
+                and otask_code like concat(#{otask_code}, ' %')
+            </if>
+        </where>
+    </select>
+
+    <!--插入应急保障任务信息-->
+    <insert id="addTaskOthersInfo" parameterType="com.startest.wm.pojo.wm_task_others">
+        insert into wm_task_others(
+        <include refid="taskOthersField"></include>
+        ) values (
+        #{otask_id},
+        #{index_id},
+        #{otask_code},
+        #{otask_name},
+        #{otask_source},
+        #{otask_maker},
+        #{otask_unit},
+        #{otask_people},
+        to_date(#{task_start_date},'YYYY-MM-DD'),
+        #{otask_content},
+        #{otask_count},
+        #{otask_works}
+        )
+    </insert>
+    <!--批量导入应急保障任务信息-->
+    <insert id="insertTaskOthersByList" parameterType="com.startest.wm.pojo.wm_task_others">
+        insert into wm_task_others(
+        <include refid="taskOthersField"/>
+        ) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.otask_id},
+            #{item.index_id},
+            #{item.otask_code},
+            #{item.otask_name},
+            #{item.otask_source},
+            #{item.otask_maker},
+            #{item.otask_unit},
+            #{item.otask_people},
+            to_date(#{item.task_start_date},'YYYY-MM-DD'),
+            #{item.otask_content},
+            #{item.otask_count},
+            #{item.otask_works}
+            )
+        </foreach>
+    </insert>
+    <!--修改应急保障任务信息-->
+    <update id="editTaskOthersInfo" parameterType="com.startest.wm.pojo.wm_task_others">
+        update wm_task_others set
+        otask_code=#{otask_code},
+        otask_name=#{otask_name},
+        otask_source=#{otask_source},
+        otask_maker=#{otask_maker},
+        otask_unit=#{otask_unit},
+        otask_people=#{otask_people},
+        task_start_date=to_date(#{task_start_date},'YYYY-MM-DD'),
+        otask_content=#{otask_content},
+        otask_count=#{otask_count},
+        otask_works=#{otask_works}
+        where otask_id=#{otask_id};
+    </update>
+    <!--删除应急保障任务信息-->
+    <delete id="deleteTaskOthersInfo" parameterType="String">
+        delete from wm_task_others where otask_id=#{strID};
+    </delete>
+
+
+    <select id="isOtherByName" resultType="boolean">
+        SELECT 1 from wm_task_others where otask_name =#{otaskName} limit 1
+    </select>
+
+    <select id="countOtherByCode" resultType="java.lang.Integer">
+        select count(*) from wm_task_others where otask_code like  concat(#{dateNowStr},'%')
+    </select>
+</mapper>

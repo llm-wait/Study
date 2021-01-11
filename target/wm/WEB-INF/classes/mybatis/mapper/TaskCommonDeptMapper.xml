@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.TaskDeptCommonDao">
+    <sql id="taskDeptCommonField">
+        ctask_id,
+        dept_id,
+        user_id,
+        dept_name,
+        ctask_year,
+        ctask_name,
+        ctask_oper,
+        ctask_type,
+        ctask_workdays,
+        remark
+    </sql>
+    <!--检索部门日常任务信息-->
+    <select id="selectTaskDeptCommonInfo" parameterType="map" resultType="com.startest.wm.model.TaskDailyModel">
+        select A.*,B.user_name
+        from wm_task_deptcommon A left join sys_user B on A.user_id=B.user_id
+        <trim prefix="where" prefixOverrides="and">
+            <if test="ctask_id != null and ctask_id != ''">
+                A.ctask_id=#{ctask_id}
+            </if>
+            <if test="dept_id!=null and dept_id != ''">
+                and A.dept_id=#{dept_id}
+            </if>
+            <if test="user_id!=null and user_id != ''">
+                and A.user_id=#{user_id}
+            </if>
+            <if test="ctask_year!=null and ctask_id != ''">
+                and A.ctask_year like  '%${ctask_year}%'
+            </if>
+        </trim>
+        order by A.ctask_year desc
+    </select>
+
+    <!--新增部门日常任务信息-->
+    <insert id="insertTaskDeptCommonInfo" parameterType="com.startest.wm.pojo.wm_task_deptcommon">
+        insert into wm_task_deptcommon(
+        <include refid="taskDeptCommonField"></include>
+        ) values (
+        #{ctask_id},
+        #{dept_id},
+        #{user_id},
+        #{dept_name},
+        #{ctask_year},
+        #{ctask_name},
+        #{ctask_oper},
+        #{ctask_type},
+        #{ctask_workdays},
+        #{remark}
+        )
+    </insert>
+
+    <!--获取一年内部门人员日常总工天-->
+    <select id="getUserOneYearAllCommonWorkDays" parameterType="String" resultType="Double">
+        select sum(ctask_workdays) from wm_task_deptcommon where ctask_year=#{year} and user_id=#{userID};
+    </select>
+
+    <!--批量新增部门日常任务信息-->
+    <insert id="insertTaskDeptCommonInfoByList" parameterType="com.startest.wm.pojo.wm_task_deptcommon">
+        insert into wm_task_deptcommon(
+        <include refid="taskDeptCommonField"></include>
+        ) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.ctask_id},
+            #{item.dept_id},
+            #{item.user_id},
+            #{item.dept_name},
+            #{item.ctask_year},
+            #{item.ctask_name},
+            #{item.ctask_oper},
+            #{item.ctask_type},
+            #{item.ctask_workdays},
+            #{item.remark})
+        </foreach>
+    </insert>
+    <!--修改部门日常任务信息-->
+    <update id="updateTaskDeptCommonInfo" parameterType="com.startest.wm.pojo.wm_task_deptcommon">
+        update wm_task_deptcommon
+        set
+        user_id=#{user_id},
+        ctask_year=#{ctask_year},
+        ctask_name=#{ctask_name},
+        ctask_type=#{ctask_type},
+        ctask_workdays=#{ctask_workdays},
+        remark=#{remark}
+        where ctask_id=#{ctask_id}
+    </update>
+    <!--删除部门日常任务信息-->
+    <delete id="deleteTaskDeptCommonInfo" parameterType="String">
+        delete from wm_task_deptcommon where ctask_id=#{strID}
+    </delete>
+    <!--根据ID获取部门日常任务信息-->
+    <select id="getTaskDeptCommonInfoByID" parameterType="java.lang.String"
+            resultType="com.startest.wm.pojo.wm_task_deptcommon">
+        select
+        <include refid="taskDeptCommonField"></include>
+        from wm_task_deptcommon
+        where ctask_id=#{ctask_id}
+    </select>
+    <!--根据任务名称获取部门日常任务信息-->
+    <select id="getTaskDeptCommonInfoByName" resultType="com.startest.wm.pojo.wm_task_deptcommon">
+        select
+        <include refid="taskDeptCommonField"></include>
+        from wm_task_deptcommon
+        where ctask_name=#{ctask_name}
+    </select>
+</mapper>

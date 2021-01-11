@@ -1,0 +1,1 @@
+INSERT INTO public.sys_score_setting (id, hgl, yxl, yxgtb, gctz, gctc, jsxgz, jsxgc, ywgt, gtb, ywnl, gztd, cxcql, xlcj, bwcj, year) VALUES ('7ee5ff05-ee1e-459e-9a98-bc92e17d81d4', 20.00, 10.00, 5.00, 8.00, 4.00, 3.00, 1111.00, 31.50, 3.50, 5.00, 5.00, 4.00, 8.00, 8.00, 2020);

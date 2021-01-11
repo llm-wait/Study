@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.ProjectInfoDao">
+
+    <!--****************************************项目分类索引相关************************************-->
+
+    <!--添加科研项目类型-->
+    <insert id="addProjectIndex" parameterType="com.startest.wm.pojo.wm_project_index">
+        insert into wm_project_index(id,pid,index_name,index_order)values(#{id},#{pid},#{index_name},0)
+    </insert>
+
+    <!--修改科研项目类型-->
+    <update id="updateProjectIndex" parameterType="com.startest.wm.pojo.wm_project_index">
+        update wm_project_index set index_name=#{index_name} where id=#{id}
+    </update>
+
+    <!--删除科研项目索引信息-->
+    <delete id="deleteProjectIndex">
+        delete from wm_project_index where id=#{id}
+    </delete>
+
+    <!--获取科研项目类型列表-->
+    <select id="getProjectIndexList" resultType="com.startest.wm.pojo.wm_project_index">
+        select id,pid,index_name,index_order
+        from wm_project_index
+        <where>
+            <if test="index_name!=null and index_name!=''">index_name=#{index_name}</if>
+        </where>
+    </select>
+
+    <!--获取项目索引类型模型-->
+    <select id="getProjectIndexModel" resultType="com.startest.wm.model.ProjectIndexModel">
+        select id,index_id as pid,project_name as label,'项目' as type,1 as order
+        from wm_project_info
+        where index_id=#{indexID} and project_year=#{proYear}
+    </select>
+
+    <!--获取科研目录树索引信息-->
+    <select id="getAllProjectIndexList" resultType="com.startest.wm.pojo.wm_project_index">
+        select id,pid,index_name,index_order
+        from wm_project_index
+    </select>
+    <!--获取科研目录树索引信息模型-->
+    <select id="getAllProjectIndexModelList" resultType="com.startest.wm.model.ProjectIndexModel">
+        select id,pid,index_name as label,'分类' as type,index_order as order from wm_project_index
+    </select>
+
+    <!--****************************************项目信息相关************************************-->
+
+    <!--添加项目信息-->
+    <insert id="addProjectInfo" parameterType="wm_project_info">
+        insert into wm_project_info(id,index_id,project_year,project_name,project_source,project_cycle,project_unit,project_leader,technical_leader,project_members,project_startdate,project_enddate,total_money,pay_money,remark,project_state)
+        values(
+        #{id},
+        #{index_id},
+        #{project_year},
+        #{project_name},
+        #{project_source},
+        #{project_cycle},
+        #{project_unit},
+        #{project_leader},
+        #{technical_leader},
+        #{project_members},
+        #{project_startdate},
+        #{project_enddate},
+        #{total_money},
+        #{pay_money},
+        #{remark},
+        #{project_state}
+        )
+    </insert>
+
+    <!--修改项目信息-->
+    <update id="updateProjectInfo">
+        update wm_project_info set
+        project_year=#{project_year},
+        project_name=#{project_name},
+        project_source=#{project_source},
+        project_cycle=#{project_cycle},
+        project_unit=#{project_unit},
+        project_leader=#{project_leader},
+        technical_leader=#{technical_leader},
+        project_members=#{project_members},
+        project_startdate=#{project_startdate},
+        project_enddate=#{project_enddate},
+        total_money=#{total_money},
+        pay_money=#{pay_money},
+        remark=#{remark},
+        project_state=#{project_state}
+        where id=#{id}
+    </update>
+
+    <!--根据ID删除项目信息-->
+    <delete id="deleteProjectById">
+        delete from wm_project_info where id = #{id}
+    </delete>
+
+    <!--根据ID查询项目信息-->
+    <select id="getProjectInfoById" resultType="com.startest.wm.pojo.wm_project_info">
+        select *  from wm_project_info where id=#{id}
+    </select>
+
+    <!--根据年份和索引ID查询项目列表-->
+    <select id="getProjectInfoByIndexAndYear" resultType="com.startest.wm.pojo.wm_project_info">
+        select *
+        from wm_project_info
+        <where>
+            <if test="proYear != null and proYear != ''">
+                project_year=#{proYear}
+            </if>
+            <if test="indexID != null and indexID != ''">
+                and index_id=#{indexID}
+            </if>
+        </where>
+        order by project_year desc, project_state asc
+    </select>
+
+    <!--自定义条件查询项目列表-->
+    <select id="getProjectInfoByDefine" resultType="com.startest.wm.pojo.wm_project_info">
+        select * from wm_project_info
+        <where>
+            <if test="projectYear != null and projectYear != ''">
+                and project_year=#{projectYear}
+            </if>
+            <if test="projectName != null and projectName != ''">
+                and project_name like concat('%', '${projectName}', '%')
+            </if>
+            <if test="projectCycle != null and projectCycle != ''">
+                and project_cycle=#{projectCycle}
+            </if>
+            <if test="projectState != null and projectState != ''">
+                and project_state=#{projectState}
+            </if>
+        </where>
+        order by project_year desc, project_state asc
+    </select>
+
+    <!--作业室主任查询科研项目信息-->
+    <select id="zysSelect" resultType="com.startest.wm.pojo.wm_project_info">
+        select *
+        from task_info_scientific a,sys_dept b
+        <where>
+            and a.project_unit=b.dept_name
+            and b.dept_id=#{deptId}
+            <if test="projectInfo.year != null and projectInfo.year != ''">
+                and year = #{projectInfo.year}
+            </if>
+            <if test="projectInfo.project_name != null and projectInfo.project_name != ''">
+                and project_name like concat('%', '#{projectInfo.project_name}', '%')
+            </if>
+            <if test="projectInfo.schedule_status != null and projectInfo.schedule_status != ''">
+                and schedule_status= #{projectInfo.schedule_status}
+            </if>
+        </where>
+    </select>
+
+    <insert id="addAssignPersonnelInformation" parameterType="wm_project_distribution">
+        insert into wm_project_distribution
+        values (
+        #{dis_id},
+        #{user_id},
+        #{project_oper},
+        #{project_days},
+        to_date(#{project_startdate}, 'YYYY-MM-DD'),
+        to_date(#{project_enddate}, 'YYYY-MM-DD'),
+        #{remark}, #{project_id}, #{dept_id}, #{project_rate})
+    </insert>
+
+
+    <select id="getDistributionDepartment" resultType="java.lang.String">
+        select dept_id from wm_project_dept where project_id=#{projectId}
+    </select>
+
+    <select id="getListOfPeople" resultType="java.util.Map">
+        select a.user_name,a.user_id
+        from sys_user a
+        join sys_dept_station_user b on a.user_id = b.user_id
+        join sys_dept c on c.dept_id = b.dept_id and c.dept_pid in
+        <foreach collection="projectId" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+
+
+    <delete id="delTaskAssignment">
+        delete from wm_project_distribution where dis_id=#{disId}
+    </delete>
+
+</mapper>

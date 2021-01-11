@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.SysStationDao">
+
+    <!--新增岗位信息-->
+    <insert id="insertStation" parameterType="com.startest.wm.pojo.sys_station">
+        insert into sys_station(station_id,station_name,station_order,description)
+        values (#{station_id},#{station_name},#{station_order},#{description})
+    </insert>
+
+    <!--删除岗位信息-->
+    <delete id="deleteStationByID" parameterType="java.lang.String">
+        delete from sys_station where station_id=#{station_id}
+    </delete>
+
+    <!--删除岗位信息-->
+    <delete id="deleteStationByName" parameterType="java.lang.String">
+        delete from sys_station where station_name=#{station_name}
+    </delete>
+
+    <!--更新岗位信息-->
+    <update id="updateStation" parameterType="com.startest.wm.pojo.sys_station">
+        update sys_station
+        <trim prefix="set" suffixOverrides=",">
+            <if test="station_name!=null">station_name=#{station_name},</if>
+            <if test="station_order!=null">station_order=#{station_order},</if>
+            <if test="description!=null">description=#{description}</if>
+        </trim>
+        where station_id=#{station_id}
+    </update>
+
+    <!--根据岗位ID查询岗位信息-->
+    <select id="queryStationByID" parameterType="java.lang.String" resultType="com.startest.wm.pojo.sys_station">
+        select station_id,station_name,station_order,description
+        from sys_station
+        where station_id=#{station_id}
+    </select>
+
+    <!--根据岗位名称查询岗位信息-->
+    <select id="queryStationByName" parameterType="java.lang.String" resultType="com.startest.wm.pojo.sys_station">
+        select station_id,station_name,station_order,description
+        from sys_station
+        where station_name like concat('%',#{stationName},'%') order by station_order
+    </select>
+
+    <!--查询所有岗位信息-->
+    <select id="queryStationAll" resultType="com.startest.wm.pojo.sys_station">
+        select station_id,station_name,station_order,description
+        from sys_station
+        order by station_order
+    </select>
+
+    <!--查询拥有此岗位的所有部门-->
+    <select id="queryDept" resultType="com.startest.wm.pojo.sys_dept">
+        select A.*
+        from sys_dept A
+        inner join sys_dept_station_user B on
+         B.station_id=#{station_id}
+    </select>
+
+    <!--判断岗位是否已经存在-->
+    <select id="isStationExist" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*)
+        from sys_station
+        where station_id!=#{station_id} and station_name=#{station_name}
+    </select>
+
+    <!--判断岗位下是否已经存在人员-->
+    <select id="isStationExistUsers" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*)
+        from sys_dept_station_user
+        where station_id=#{station_id}
+    </select>
+
+</mapper>

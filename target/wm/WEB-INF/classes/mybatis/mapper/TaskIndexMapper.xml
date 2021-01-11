@@ -1,0 +1,652 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.TaskIndexDao">
+    <sql id="taskIndexColumns">
+        index_id,
+        task_class_id,
+        task_data_id,
+        task_year,
+        task_type,
+        task_name,
+        task_remark,
+        task_state,
+        task_rate,
+        task_rate_describe,
+        task_class_tag,
+        task_print_date,
+        data_code,
+        data_name,
+        task_end_date
+    </sql>
+    <!--检索任务索引信息-->
+    <select id="selectTaskIndexInfo" parameterType="com.startest.wm.pojo.wm_task_index"
+            resultType="com.startest.wm.pojo.wm_task_index">
+        select
+        <include refid="taskIndexColumns">
+        </include>
+        from wm_task_index
+        <where>
+            <if test="index_id != null">
+                and index_id = #{index_id}
+            </if>
+            <if test="task_year != null">
+                and task_year = #{task_year}
+            </if>
+            <if test="task_type != null">
+                and task_type like concat('%', #{task_type}, '%')
+            </if>
+            <if test="task_state != null">
+
+
+                                            and task_state=#{task_state}
+
+
+            </if>
+            <if test="task_name != null">
+
+
+                                            and task_name like concat(' % ',#{task_name},' %')
+
+
+            </if>
+            <if test="is_task_dept == 1">
+                and index_id in (select task_index_id from wm_task_dept)
+            </if>
+            <if test="is_task_dept == 2">
+                and index_id not in (select task_index_id from wm_task_dept)
+            </if>
+        </where>
+    </select>
+    <!--检索任务索引中的年份信息-->
+    <select id="selectTaskYearInfo" resultType="String">
+        select distinct task_year
+        from wm_task_index
+        order by task_year desc
+    </select>
+    <!--筹划任务，检索年度任务模型信息-->
+    <select id="selectCommontTaskInfo" parameterType="com.startest.wm.model.TaskIndexModel"
+            resultType="com.startest.wm.model.TaskIndexModel">
+        SELECT distinct a.index_id,
+                        a.task_class_id,
+                        a.task_data_id,
+                        --b.task_info_id,
+                        a.task_year,
+                        a.task_type,
+                        a.task_name,
+                        a.task_remark,
+                        a.task_class_tag,
+                        a.task_print_date,
+                        b.task_type_content,
+                        b.task_start_date,
+                        a.task_state,
+                        a.data_code,
+                        a.data_name,
+                        c.dept_id
+        FROM wm_task_index a,
+             wm_task_info b,
+             wm_task_dept c
+                WHERE a.index_id = b.task_index_id
+                  AND a.index_id = c.task_index_id
+                  AND a.task_type &lt;&gt; '应急保障任务'
+        <if test="dept_id != null and dept_id != ''">
+            and c.dept_id = #{dept_id}
+        </if>
+        <if test="task_year != null and task_year != ''">
+            and a.task_year like '%#{task_year}%'
+        </if>
+        <if test="task_type != null and task_type != ''">
+            and a.task_type like '%#{task_type}%'
+        </if>
+        <if test="task_state != null and task_state != ''">
+            and a.task_state like '%#{task_state}%'
+        </if>
+        <if test="task_state_list != null and task_state_list != ''">
+            and a.task_state in (#{task_state_list})
+        </if>
+        <if test="task_class_id != null and task_class_id != ''">
+            and a.task_class_id = #{task_class_id}
+        </if>
+    </select>
+    <!--检索应急保障任务模型信息-->
+    <select id="selectOthersTaskInfo" parameterType="com.startest.wm.model.TaskIndexModel"
+            resultType="com.startest.wm.model.TaskIndexModel">
+        SELECT a.index_id,
+               a.task_class_id,
+               a.task_data_id,
+               c.dept_id,
+               b.otask_id,
+               a.task_year,
+               a.task_type,
+               a.task_name,
+               a.task_remark,
+               a.task_class_tag,
+               a.task_print_date,
+               b.task_start_date,
+               a.task_state,
+               a.data_code,
+               a.data_name,
+               b.otask_maker
+        FROM wm_task_index a,
+             wm_task_others b,
+             wm_task_dept c
+                WHERE a.index_id = b.index_id
+                  AND a.index_id = c.task_index_id
+                  AND a.task_type = '应急保障任务'
+        <if test="dept_id != null and dept_id != ''">
+            and c.dept_id = #{dept_id}
+        </if>
+        <if test="task_year != null and task_year != ''">
+            and a.task_year like '%#{task_year}%'
+        </if>
+        <if test="task_type != null and task_type != ''">
+            and a.task_type like '%#{task_type}%'
+        </if>
+        <if test="task_state != null and task_state != ''">
+            and a.task_state like '%#{task_state}%'
+        </if>
+        <if test="task_state_list != null and task_state_list != ''">
+            and a.task_state in (#{task_state_list})
+        </if>
+        <if test="task_class_id != null and task_class_id != ''">
+            and a.task_class_id = #{task_class_id}
+        </if>
+    </select>
+    <!--新增任务索引信息(单个)-->
+    <insert id="insertTaskIndexInfo" parameterType="com.startest.wm.pojo.wm_task_index">
+        insert into wm_task_index (index_id,
+                                   task_class_id,
+                                   task_data_id,
+                                   task_year,
+                                   task_type,
+                                   task_name,
+                                   task_remark,
+                                   task_state,
+                                   task_class_tag,
+                                   data_code,
+                                   data_name)
+        values (#{index_id},
+                #{task_class_id},
+                #{task_data_id},
+                #{task_year},
+                #{task_type},
+                #{task_name},
+                #{task_remark},
+                #{task_state},
+                #{task_class_tag},
+                #{data_code},
+                #{data_name})
+    </insert>
+    <!--批量新增任务索引信息（多个）-->
+    <insert id="insertTaskIndexInfoByList" parameterType="java.util.List">
+        insert into wm_task_index (index_id,
+                                   task_class_id,
+                                   task_data_id,
+                                   task_year,
+                                   task_type,
+                                   task_name,
+                                   task_remark,
+                                   task_state,
+                                   task_class_tag,
+                                   data_code,
+                                   data_name) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.index_id},
+             #{item.task_class_id},
+             #{item.task_data_id},
+             #{item.task_year},
+             #{item.task_type},
+             #{item.task_name},
+             #{item.task_remark},
+             #{item.task_state},
+             #{item.task_class_tag},
+             #{item.data_code},
+             #{item.data_name})
+        </foreach>
+    </insert>
+    <!--更新出厂时间-->
+    <update id="updatePrintDate" parameterType="String">
+        update wm_task_index
+        set task_print_date=to_date(#{printDate}, 'YYYY-MM-DD')
+        where index_id = #{strID}
+    </update>
+    <!--更新任务索引信息-->
+    <update id="updateTaskIndexInfo" parameterType="com.startest.wm.pojo.wm_task_index">
+        update wm_task_index
+        set task_year=#{task_year},
+            task_type=#{task_type},
+            task_name=#{task_name},
+            task_remark=#{task_remark}
+        where index_id = #{index_id}
+    </update>
+    <!--更新任务进度及进度说明-->
+    <update id="updateTaskRate" parameterType="String">
+        update wm_task_index
+        set task_rate=#{rate},
+            task_rate_describe=#{description}
+        where index_id = #{indexID}
+    </update>
+    <!--更新任务资料-->
+    <update id="updateTaskData" parameterType="String">
+        update wm_task_index
+        set task_data_id=#{dataID}
+        where index_id = #{indexID}
+    </update>
+    <!--更新任务种类-->
+    <update id="updateTaskClassInfo" parameterType="String">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update wm_task_index
+            set task_class_id=#{classID},task_type = #{name}
+            where index_id = #{item};
+        </foreach>
+    </update>
+    <!--更新任务状态-->
+    <update id="updateTaskState">
+        <!--        update wm_task_index-->
+        <!--        <trim prefix="set" suffixOverrides=",">-->
+        <!--            task_state=#{state},-->
+        <!--            <if test="state!=null">-->
+        <!--                task_class_id=#{classID}-->
+        <!--            </if>-->
+        <!--        </trim>-->
+        <!--        where index_id=#{indexID}-->
+        update wm_task_index set task_state=#{state}
+        <if test="state == '制印'">
+            , task_end_date=to_date(#{endData}, 'YYYY-MM-DD')
+        </if>
+
+                where index_id=#{indexID}
+    </update>
+    <update id="updateTaskStateByList">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update wm_task_index
+            set task_state=#{state}
+            where index_id = #{item}
+        </foreach>
+    </update>
+    <!--更新任务年份-->
+    <update id="updateTaskYearInfo" parameterType="String">
+        update wm_task_index
+        set task_year=#{year}
+        where index_id = #{indexID}
+    </update>
+    <update id="updateTaskYearInfoByList" parameterType="String">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update wm_task_index
+            set task_year=#{year}
+            where index_id = #{item}
+        </foreach>
+    </update>
+    <!--删除任务索引信息-->
+    <delete id="deleteTaskIndexInfo" parameterType="String">
+        delete
+        from wm_task_index
+        where index_id = #{indexID}
+    </delete>
+
+    <!--****************************   海图资料任务 ***************************************-->
+    <!--未分配部门列表-->
+    <select id="selectMapTaskListInfo" parameterType="com.startest.wm.pojo.wm_task_index"
+            resultType="com.startest.wm.model.TaskMapModel">
+        select distinct a.*, d.index_id, d.task_year, d.task_state
+        from map_data a,
+             wm_task_index d where a.map_id = d.task_data_id
+        <if test="task_class_id != null">
+            and d.task_class_id = #{task_class_id}
+        </if>
+        <if test="child_id_list != null">
+            and d.task_class_id in (#{child_id_list})
+        </if>
+        <if test="task_year != null">
+            and d.task_year = #{task_year}
+        </if>
+        <if test="task_data_id != null">
+            and a.map_id = #{task_data_id}
+        </if>
+        <if test="index_id != null">
+            and d.index_id = #{index_id}
+        </if>
+        <if test="task_state == '筹划'">
+            and (d.task_state = '筹划' or d.task_state is null or d.task_state = '')
+        </if>
+    </select>
+    <!--筹划任务已分配部门列表-->
+    <select id="selectDeptMapTaskListInfo" parameterType="com.startest.wm.pojo.wm_task_index"
+            resultType="com.startest.wm.model.TaskMapModel">
+        select distinct a.*, d.index_id, d.task_year, d.task_state
+        from map_data a,
+             wm_task_dept c,
+             wm_task_index d where a.map_id = d.task_data_id
+                               and c.task_index_id = d.index_id
+        <if test="is_task_dept != null">
+            and d.is_task_dept = #{is_task_dept}
+        </if>
+        <if test="task_year != null">
+            and d.task_year = #{task_year}
+        </if>
+        <if test="dept_id != null">
+            and c.dept_id = #{dept_id}
+        </if>
+        <if test="task_data_id != null">
+            and a.map_id = #{task_data_id}
+        </if>
+        <if test="child_id_list != null and child_id_list.size() != 0">
+            and d.task_class_id in
+            <foreach collection="child_id_list" item="val" separator="," open="("   close=")">
+            #{val}
+            </foreach>
+
+        </if>
+        <if test="task_state != null and task_state != ''">
+           and d.task_state = #{task_state}
+        </if>
+    </select>
+    <!--****************************   书表资料任务 ***************************************-->
+
+    <!--未分配部门列表-->
+    <select id="selectBookTaskListInfo" parameterType="com.startest.wm.pojo.wm_task_index"
+            resultType="com.startest.wm.model.TaskBookModel">
+        select distinct a.*, d.task_name,d.index_id, d.task_year, d.task_state
+        from port_data a,
+             wm_task_index d where a.port_id = d.task_data_id
+        <if test="task_class_id != null">
+            and d.task_class_id = #{task_class_id}
+        </if>
+        <if test="child_id_list != null">
+            and d.task_class_id in
+            <foreach collection="child_id_list" item="val" open="(" close=")" separator=",">
+                #{val}
+            </foreach>
+        </if>
+        <if test="task_year != null">
+            and d.task_year = #{task_year}
+        </if>
+        <if test="task_data_id != null">
+            and a.port_id = #{task_data_id}
+        </if>
+        <if test="index_id != null">
+            and d.index_id = #{index_id}
+        </if>
+        <if test="task_state != null and task_state != ''">
+            and d.task_state = #{task_state}
+        </if>
+    </select>
+    <!--已分配部门列表-->
+    <select id="selectDeptBookTaskListInfo" parameterType="com.startest.wm.pojo.wm_task_index"
+            resultType="com.startest.wm.model.TaskBookModel">
+        select distinct a.*, d.index_id, d.task_year, d.task_state
+        from port_data a,
+             wm_task_dept c,
+             wm_task_index d where a.port_id = d.task_data_id
+                               and c.task_index_id = d.index_id
+        <if test="is_task_dept != null">
+            and d.is_task_dept = #{is_task_dept}
+        </if>
+        <if test="task_year != null">
+            and d.task_year = #{task_year}
+        </if>
+        <if test="dept_id != null">
+            and c.dept_id = #{dept_id}
+        </if>
+        <if test="task_data_id != null">
+            and a.port_id = #{task_data_id}
+        </if>
+        <if test="child_id_list != null and child_id_list.size() != 0">
+            and d.task_class_id in
+            <foreach collection="child_id_list" item="val" separator="," open="("
+                     close=")">
+             #{val}
+            </foreach>
+        </if>
+        <if test="task_state != null and task_state != ''">
+            and d.task_state = #{task_state}
+        </if>
+    </select>
+    <!--****************************   应急保障任务 ***************************************-->
+    <!--未分配部门列表-->
+    <select id="selectOthersTaskListInfo" parameterType="com.startest.wm.pojo.wm_task_index"
+            resultType="com.startest.wm.model.TaskOthersModel">
+        select distinct a.*,d.task_name, d.task_year, d.task_state
+        from wm_task_others a,
+             wm_task_index d where a.index_id = d.index_id
+        <if test="task_class_id != null and  task_class_tag != ''">
+            and d.task_class_id = #{task_class_id}
+        </if>
+        <if test="child_id_list != null  and child_id_list.size() > 0">
+            and d.task_class_id in
+            <foreach collection="child_id_list" separator="," open="(" close=")" item="vals">
+                #{vals}
+            </foreach>
+
+        </if>
+        <if test="task_year != null and task_year != ''">
+            and d.task_year = #{task_year}
+        </if>
+        <if test="task_data_id != null and task_data_id != ''">
+            and a.otask_id = #{task_data_id}
+        </if>
+        <if test="index_id != null and index_id != ''">
+            and d.index_id = #{index_id}
+        </if>
+        <if test="task_state != null and task_state != ''">
+            and d.task_state = #{task_state}
+        </if>
+    </select>
+    <!--已分配部门列表-->
+    <select id="selectDeptOthersTaskListInfo" parameterType="com.startest.wm.pojo.wm_task_index"
+            resultType="com.startest.wm.model.TaskOthersModel">
+        select distinct a.*, d.task_year, d.task_state
+        from wm_task_others a,
+             wm_task_dept c,
+             wm_task_index d where a.index_id = d.index_id
+                               and c.task_index_id = d.index_id
+        <if test="is_task_dept != null">
+            and d.is_task_dept = #{is_task_dept}
+        </if>
+        <if test="task_year != null">
+            and d.task_year = #{task_year}
+        </if>
+        <if test="dept_id != null">
+            and c.dept_id = #{dept_id}
+        </if>
+        <if test="task_data_id != null">
+            and a.otask_id = #{task_data_id}
+        </if>
+        <if test="child_id_list != null and child_id_list.size() != 0">
+            and d.task_class_id in
+            <foreach collection="child_id_list" item="val" separator="," open="("
+                     close=")">
+                #{val}
+            </foreach>
+        </if>
+        <if test="task_state != null and task_state != ''">
+            and d.task_state = #{task_state}
+        </if>
+    </select>
+
+    <select id="selectIsAllocation" resultType="java.lang.String">
+        select a.task_name
+        from wm_task_index a
+        where (
+                a.task_year is null
+                        or a.task_year = ''
+                        or (select count(b.*) from wm_task_dept b where b.task_index_id = a.index_id) &lt; 1
+                )
+          and a.index_id = #{id}
+    </select>
+
+    <select id="selectCommontByIds" resultType="com.startest.wm.model.TaskIndexModel">
+        SELECT distinct a.index_id,
+                        a.task_class_id,
+                        a.task_data_id,
+                        c.dept_id,
+                        --b.task_info_id,
+                        a.task_year,
+                        a.task_type,
+                        a.task_name,
+                        a.task_remark,
+                        a.task_class_tag,
+                        a.task_print_date,
+                        b.task_type_content,
+                        b.task_start_date,
+                        a.task_state,
+                        a.data_code,
+                        a.data_name
+        FROM wm_task_index a,
+             wm_task_info b,
+             wm_task_dept c
+                WHERE a.index_id = b.task_index_id
+                  AND a.index_id = c.task_index_id
+                  AND a.task_type &lt;&gt; '应急保障任务'
+                  and   a.index_id in
+        <foreach collection="list" item="valueList" open="(" separator="," close=")">
+            #{valueList}
+        </foreach>
+    </select>
+
+    <select id="selectOthersByIds" resultType="com.startest.wm.model.TaskIndexModel">
+        SELECT a.index_id,
+               a.task_class_id,
+               a.task_data_id,
+               c.dept_id,
+               b.otask_id,
+               a.task_year,
+               a.task_type,
+               a.task_name,
+               a.task_remark,
+               a.task_class_tag,
+               a.task_print_date,
+               b.task_start_date,
+               a.task_state,
+               a.data_code,
+               a.data_name,
+               b.otask_maker
+        FROM wm_task_index a,
+             wm_task_others b,
+             wm_task_dept c
+                WHERE a.index_id = b.index_id
+                  AND a.index_id = c.task_index_id
+                  AND a.task_type = '应急保障任务'
+                  and   a.index_id in
+        <foreach collection="list" item="valueList" open="(" separator="," close=")">
+            #{valueList}
+        </foreach>
+    </select>
+
+    <!--查询执行单中是否已经存在同类型，同人员的记录-->
+    <select id="selectTask" resultType="java.lang.Integer">
+        select 1
+        from wm_task_distribution a,
+             sys_user b
+        where a.user_id = b.user_id
+          and b.user_name = #{user_name}
+          and a.distribution_type = #{distribution_type}
+          and task_index_id = #{task_index_id}
+    </select>
+
+    <select id="selectallTaskListInfo" resultType="com.startest.wm.pojo.wm_task_index">
+        select distinct a.*
+        from wm_task_index a,
+             wm_task_dept b
+        <where>
+            and a.index_id = b.task_index_id
+            <if test="child_id_list != null and child_id_list.size() != 0">
+                and a.task_class_id in
+                <foreach collection="child_id_list" item="val" separator="," open="("
+                         close=")">
+                    #{val}
+                </foreach>
+            </if>
+            <if test="task_year != null and task_year != ''">
+                and a.task_year = #{task_year}
+            </if>
+            <if test="dept_id != null and dept_id != ''">
+                   and b.dept_id = #{dept_id}
+            </if>
+            <if test="task_state != null and task_state != ''">
+                and a.task_state = #{task_state}
+            </if>
+        </where>
+    </select>
+
+    <select id="getTaskIndexModelInfo" resultType="com.startest.wm.model.TaskIndexModel">
+        SELECT a.*,
+               b.task_type_content,
+               b.task_start_date from
+                (select distinct index_id,
+                                 task_class_id,
+                                 task_data_id,
+                                 task_year,
+                                 task_type,
+                                 task_name,
+                                 task_remark,
+                                 task_class_tag,
+                                 task_print_date,
+                                 task_state,
+                                 data_code,
+                                 data_name
+                 FROM wm_task_index
+        <where>
+            <if test="classIds != null and classIds.size() != 0">
+                and task_class_id in
+                <foreach collection="classIds" item="val" open="(" close=")" separator=",">
+                    #{val}
+                </foreach>
+            </if>
+        </where>
+
+        ) a
+                left join wm_task_info b
+                on a.index_id = b.task_index_id
+    </select>
+
+    <select id="selectDeptTaskIndexInfo" resultType="com.startest.wm.model.TaskIndexModel">
+        select
+        a.index_id,
+        a.task_year,
+               a.task_name,
+               a.task_type,
+               a.task_name,
+               b.task_type_content,
+               b.task_start_date,
+               a.task_print_date,
+               a.task_remark,
+               a.task_state
+        from wm_task_index a,
+             wm_task_info b
+        <where>
+            a.index_id = b.task_index_id
+            <if test="task_year != null and task_year != ''">
+                    and a.task_year = #{task_year}
+            </if>
+            <if test="task_state != null and task_state != ''">
+                    and a.task_state = #{task_state}
+            </if>
+            <if test="task_state == null and task_state == ''">
+                and a.task_state == '下发' or a.task_state=='任务进行'
+            </if>
+            <if test="task_type != null and task_type != ''">
+                    and a.task_type = #{task_type}
+            </if>
+        </where>
+
+    </select>
+
+    <select id="getTaskIndexInfoById" resultType="com.startest.wm.pojo.wm_task_index">
+        select
+        <include refid="taskIndexColumns">
+        </include>
+        from wm_task_index
+        <where>
+            <if test="indexId != null and indexId != ''">
+                and index_id = #{indexId}
+            </if>
+        </where>
+
+    </select>
+
+    <update id="updateTaskName">
+        update wm_task_index  set  task_name=#{name} where index_id = #{taskId}
+    </update>
+</mapper>

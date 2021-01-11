@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.SysEnumDao">
+    <!--查询港口资料所属国家-->
+    <select id="queryPortCountry" resultType="java.lang.String">
+        select distinct port_country from port_data;
+    </select>
+
+    <!--查询港口资料所属大洲-->
+    <select id="queryPortContient" resultType="java.lang.String">
+        select distinct port_continent from port_data;
+    </select>
+
+    <!--查询港口资料所属海区-->
+    <select id="queryPortSea" resultType="java.lang.String">
+        select distinct port_sea from port_data;
+    </select>
+
+    <!--查询港口资料来源-->
+    <select id="queryPortDataSource" resultType="java.lang.String">
+        select distinct port_data_source from port_data;
+    </select>
+
+    <!--查询海图资料出版单位-->
+    <select id="queryMapPublishUnit" resultType="java.lang.String">
+        select distinct publish_unit from map_data;
+    </select>
+</mapper>

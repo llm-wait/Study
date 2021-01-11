@@ -1,0 +1,1 @@
+INSERT INTO public.wm_task_others (otask_id, otask_code, otask_name, otask_source, otask_maker, otask_unit, otask_people, task_start_date, otask_content, otask_count, otask_works, index_id) VALUES ('7AF6A212BE844E54B3583D01F58326CC', '20201221001', '123', '123', '123', '中国海区制图室', '123', '2020-12-14', '123', '', '', '468AC36759A94DDCB8643BE94815FCEC');

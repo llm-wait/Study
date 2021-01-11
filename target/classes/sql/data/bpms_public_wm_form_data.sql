@@ -1,0 +1,1 @@
+INSERT INTO public.wm_form_data (book_data_id, book_jcode, book_name, book_describe, book_edition, book_impression, book_edit, book_publish, book_impression_count) VALUES ('FB0504FC53EB4324BA4F2AEC328B75D0', '12', '12', '12', '12', '12', '12', '2020-12-14T16:00:00.000Z', '12');

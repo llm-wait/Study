@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.TaskClassDao">
+
+    <sql id="taskClassColumns">
+        class_id,parent_id,class_name,class_tag,class_remark,class_icon,class_order,class_year,class_type
+    </sql>
+
+    <!--任务分类信息查询-->
+    <select id="selectClassInfo" parameterType="com.startest.wm.pojo.wm_task_class"
+            resultType="com.startest.wm.pojo.wm_task_class">
+        select
+        <include refid="taskClassColumns">
+        </include>
+        from wm_task_class
+        <where>
+            <if test="class_id != null">
+                and class_id = #{class_id}
+            </if>
+            <if test="parent_id != null">
+                and parent_id = #{parent_id}
+            </if>
+            <if test="class_name != null">
+                and class_name like concat('%', #{class_name}, '%')
+            </if>
+            <if test="class_tag != null">
+                            and class_tag=#{class_tag}
+            </if>
+            <if test="class_year != null">
+                and class_year = #{class_year}
+            </if>
+            <if test="class_type != null">
+                and class_type = #{class_type}
+            </if>
+        </where>
+        order by class_order
+    </select>
+
+    <!--查找分类名称是否存在-->
+    <select id="isTaskClassExist" parameterType="String" resultType="Integer">
+        select count(*) as rowcount from wm_task_class
+         <where>
+             <if test="className != null and className != ''">
+                    and class_name=#{className}
+             </if>
+             <if test="parentID != null and parentID != ''">
+                    and parent_id= #{parentID}
+             </if>
+             <if test="class_id != null and class_id != ''">
+                    and class_id= #{class_id}
+             </if>
+        </where>
+
+
+    </select>
+
+    <!--任务分类信息子节点最大排序值-->
+    <select id="getNodeMaxOrderNumber" parameterType="String" resultType="Integer">
+        select max(class_order) as maxnum
+        from wm_task_class where parent_id=#{parentID}
+    </select>
+
+    <!--任务分类信息新增-->
+    <insert id="insertClassInfo" parameterType="com.startest.wm.pojo.wm_task_class">
+        insert into wm_task_class(
+        <include refid="taskClassColumns"></include>
+        ) values(
+        #{class_id},
+        #{parent_id},
+        #{class_name},
+        #{class_tag},
+        #{class_remark},
+        #{class_icon},
+        #{class_order},
+        #{class_year},
+        #{class_type}
+        )
+    </insert>
+
+    <!--任务分类信息修改-->
+    <update id="updateClassInfo" parameterType="com.startest.wm.pojo.wm_task_class">
+        update wm_task_class set
+        class_name=#{class_name},
+        class_tag=#{class_tag},
+        class_remark=#{class_remark},
+        class_icon=#{class_icon},
+        class_order=#{class_order},
+        class_year=#{class_year},
+        class_type=#{class_type}
+        where class_id=#{class_id}
+    </update>
+
+    <!--部分任务分类信息修改-->
+    <update id="editPartClassInfo" parameterType="com.startest.wm.pojo.wm_task_class">
+        update wm_task_class set
+        class_name=#{class_name},
+        class_remark=#{class_remark},
+        class_order=#{class_order}
+        where class_id=#{class_id}
+    </update>
+
+    <!--任务分类信息删除-->
+    <delete id="deleteClassInfo" parameterType="String">
+        delete from wm_task_class where class_id=#{classId}
+    </delete>
+    <!--批量修改部门分配状态  （0：全部；1:已分配；2：未分配）-->
+    <update id="updateDept">
+        update wm_task_index
+        set is_task_dept ='1'
+                where index_id in
+        <foreach collection="ids" item="val" open="(" close=")" separator=",">
+            #{val}
+        </foreach>
+    </update>
+
+    <!--根据年份和任务分类，查询任务信息-->
+    <select id="selectTaskByClassAndYear" resultType="com.startest.wm.pojo.wm_task_index">
+        SELECT DISTINCT task_name,index_id ,data_code, task_year, task_state,
+        task_data_id,task_class_id,
+                        B.class_name            task_type,
+                        array_to_string(ARRAY_AGG(DISTINCT D.dept_name),
+                                        ',') AS dept_name
+                FROM
+                (select *
+                 from wm_task_index where task_state = #{taskState}
+        <if test="taskYear != null and taskYear != ''">
+                                      and task_year = #{taskYear}
+        </if>
+                                      AND task_class_id IN
+        <foreach collection="calssIds" item="vals" open="(" close=")" separator=",">
+            #{vals}
+        </foreach>
+        )     A
+                left JOIN
+                wm_task_class B on A.task_class_id = B.class_id
+                left JOIN
+                wm_task_dept C
+                        ON A.index_id = C.task_index_id
+                left JOIN
+                sys_dept D ON C.dept_id = D.dept_id
+                GROUP BY A.task_name,A.index_id
+        ,data_code, task_year, task_state, task_data_id,task_class_id,
+                         B.class_name
+
+    </select>
+
+<!--查询全部任务分类信息-->
+    <select id="selectTaskClass" resultType="com.startest.wm.pojo.wm_task_class">
+        select * from wm_task_class
+    </select>
+
+    <select id="selectTaskNameById" resultType="java.lang.String">
+        select class_name from wm_task_class where class_id = #{classID}
+    </select>
+</mapper>

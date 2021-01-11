@@ -1,0 +1,14 @@
+INSERT INTO public.sys_station (station_id, station_name, description, station_order) VALUES ('2bddff5b16b74afab94be88ea0a175e1', '制印参谋', '', 8);
+INSERT INTO public.sys_station (station_id, station_name, description, station_order) VALUES ('992f7f69d1584869a2331c170c7c4c05', '副组长', null, 12);
+INSERT INTO public.sys_station (station_id, station_name, description, station_order) VALUES ('3955bc3a67a847c5b1baba3dd155e0c8', '主任', null, 9);
+INSERT INTO public.sys_station (station_id, station_name, description, station_order) VALUES ('2ef23590655e48719e9da423ff5efd09', '副主任', null, 10);
+INSERT INTO public.sys_station (station_id, station_name, description, station_order) VALUES ('25e4234f4ca54849a1f47dd2f3798496', '组长', null, 11);
+INSERT INTO public.sys_station (station_id, station_name, description, station_order) VALUES ('dac67d10f07d4ca1a82894e4ab39e14a', '作业员', null, 13);
+INSERT INTO public.sys_station (station_id, station_name, description, station_order) VALUES ('47bf74e3fa064f958d2b494ad71cbfda', '编辑', '', 14);
+INSERT INTO public.sys_station (station_id, station_name, description, station_order) VALUES ('6a63cc021f024f04a0869a3c2f976c55', '校对', null, 15);
+INSERT INTO public.sys_station (station_id, station_name, description, station_order) VALUES ('05b47394b6c147c3a102395f1a0754b0', '审查', null, 16);
+INSERT INTO public.sys_station (station_id, station_name, description, station_order) VALUES ('61020277fdb7453799df0750fc7fcfbc', '验收', null, 17);
+INSERT INTO public.sys_station (station_id, station_name, description, station_order) VALUES ('8fc15cdd011b46548a6fdf076a437e0a', '质控参谋', null, 7);
+INSERT INTO public.sys_station (station_id, station_name, description, station_order) VALUES ('e6044b886eb9405ebc3f2324b1513d60', '科研参谋', null, 6);
+INSERT INTO public.sys_station (station_id, station_name, description, station_order) VALUES ('c3e6a2f9713d4195b4377314cc2248e8', '计划参谋', '3123123', 5);
+INSERT INTO public.sys_station (station_id, station_name, description, station_order) VALUES ('c9dbf8179ad044539f7f6ce056ee350a', '测试岗位3', null, 1);

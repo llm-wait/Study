@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.TaskBookCalculationHelperDao">
+
+    <!--根据任务id查询错漏情况-->
+    <select id="selectTaskCheckByIndexId" resultType="com.startest.wm.pojo.wm_task_check">
+        SELECT check_error1,check_error2,check_error3,check_error4,check_mylevel FROM "wm_task_check" where task_id =#{taskIndexID}
+        <if test="disContent!=null">
+            and distribution_type=#{disContent}
+        </if>
+    </select>
+
+    <!--根据任务id和对应职位，查询的错漏情况-->
+    <select id="selectTaskcheckByTaskIdandDisType" resultType="com.startest.wm.pojo.wm_task_check">
+        SELECT a.check_error1,a.check_error2,a.check_error3,a.check_error4,a.check_mylevel  FROM "wm_task_check" a ,"wm_task_distribution" b
+        where  a.distribution_id=b.distribution_id
+          and b.product_type='书表'
+          and b.user_duty=#{type}
+          and b.task_index_id =#{taskIndexID}
+        <if test="disContent!=null">
+            and a.distribution_type=#{disContent}
+        </if>
+    </select>
+</mapper>

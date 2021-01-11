@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.ProjectDistributionDao">
+    <sql id="colFields">
+        dis_id,
+        project_id,
+        dept_id,
+        user_id,
+        project_rate,
+        project_oper,
+        project_days,
+        project_startdate,
+        project_enddate,
+        remark
+    </sql>
+    <select id="selectProjectDistributionList" parameterType="com.startest.wm.pojo.wm_project_distribution"
+            resultType="com.startest.wm.pojo.wm_project_distribution">
+        select
+        <include refid="colFields"/>
+        from wm_project_distribution
+        <where>
+            <if test="dis_id != null">
+                and dis_id = #{dis_id}
+            </if>
+            <if test="project_id != null">
+                and project_id = #{project_id}
+            </if>
+            <if test="dept_id != null">
+                and dept_id = #{dept_id}
+            </if>
+            <if test="user_id != null">
+                and user_id = #{user_id}
+            </if>
+        </where>
+    </select>
+
+    <select id="getProjectDistributionByID" resultType="com.startest.wm.pojo.wm_project_distribution">
+        select
+        <include refid="colFields"/>
+        from wm_project_distribution
+        where dis_id=#{disID}
+    </select>
+
+    <insert id="insertProjectDistribution" parameterType="com.startest.wm.pojo.wm_project_distribution">
+        insert into wm_project_distribution(
+        <include refid="colFields"/>
+        ) values (
+        #{dis_id},
+        #{project_id},
+        #{dept_id},
+        #{user_id},
+        #{project_rate},
+        #{project_oper},
+        #{project_days},
+        to_date(#{project_startdate},'YYYY-MM-DD'),
+        to_date(#{project_enddate},'YYYY-MM-DD'),
+        #{remark}
+        )
+    </insert>
+
+    <update id="updateProjectDistribution" parameterType="com.startest.wm.pojo.wm_project_distribution">
+        update wm_project_distribution set
+        project_id=#{project_id},
+        dept_id=#{dept_id},
+        user_id=#{user_id},
+        project_rate=#{project_rate},
+        project_oper=#{project_oper},
+        project_days=#{project_days},
+        project_startdate=to_date(#{project_startdate},'YYYY-MM-DD'),
+        project_enddate=to_date(#{project_enddate},'YYYY-MM-DD'),
+        remark=#{remark}
+        where dis_id=#{dis_id}
+    </update>
+
+    <delete id="deleteProjectDistribution" parameterType="String">
+        delete from wm_project_distribution where dis_id=#{strID}
+    </delete>
+</mapper>

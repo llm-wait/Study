@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.TaskDistributeDao">
+    <sql id="taskDistributionCol">
+        distribution_id,
+        task_index_id,
+        dept_id,
+        user_id,
+        user_name,
+        product_type,
+        data_code,
+        data_name,
+        distribution_type,
+        user_duty,
+        work_days,
+        start_date,
+        end_date,
+        remark
+    </sql>
+    <!--检索任务执行单信息-->
+    <select id="selectTaskDistribute" parameterType="com.startest.wm.pojo.wm_task_distribution"
+            resultType="com.startest.wm.pojo.wm_task_distribution">
+        select
+        <include refid="taskDistributionCol">
+        </include>
+        from wm_task_distribution
+        <where>
+            <if test="distribution_id != null and  distribution_id != ''">
+                and distribution_id = #{distribution_id}
+            </if>
+            <if test="task_index_id != null and  task_index_id != ''">
+                and task_index_id = #{task_index_id}
+            </if>
+            <if test="dept_id != null and  dept_id != ''">
+                and dept_id = #{dept_id}
+            </if>
+            <if test="user_id != null and  user_id != ''">
+                and user_id = #{user_id}
+            </if>
+            <if test="distribution_type != null and  distribution_type != ''">
+                and distribution_type = #{distribution_type}
+            </if>
+            <if test="user_duty != null and  user_duty != ''">
+                and user_duty = #{user_duty}
+            </if>
+            <if test="product_type != null and  product_type != ''">
+                and product_type = #{product_type}
+            </if>
+            <if test="user_name != null and  user_name != ''">
+                and user_name like concat('%',#{user_name},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectTaskDistributionContent" parameterType="String" resultType="map">
+        select DISTINCT distribution_type,distribution_id from wm_task_distribution
+        <where>
+            <if test="taskID != null and taskID != ''">
+                and task_index_id=#{taskID}
+            </if>
+            <if test="deptID != null and deptID != ''">
+                and dept_id=#{deptID}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectTaskDistributionNameByID" parameterType="String" resultType="String">
+        select distinct user_name from wm_task_distribution where
+         task_index_id=#{taskID} and dept_id=#{deptID}
+         and  distribution_type=#{taskCon} and user_duty=#{taskDuty}
+    </select>
+
+    <select id="selectTaskProductType" parameterType="String" resultType="com.startest.wm.pojo.wm_task_distribution">
+        select distinct product_type,distribution_type from wm_task_distribution where
+         task_index_id=#{indexID}
+    </select>
+
+    <!-- 获取部门一个季度海图任务列表 -->
+    <select id="getDeptAllChartWorkListInAQuarter" parameterType="String" resultType="com.startest.wm.pojo.wm_task_distribution">
+        select distinct distribution_id,
+        task_index_id,
+        dept_id,
+        product_type,
+        data_code,
+        data_name,
+        distribution_type,
+        user_duty,
+        work_days from wm_task_distribution where
+        product_type='海图'
+        and user_duty='作业'
+        and dept_id=#{deptID}
+        and task_index_id in(
+        select index_id from wm_task_index where task_year=#{year}
+        and task_end_date &gt;= to_date(#{startDate},'YYYY-MM-DD')
+        and task_end_date &lt; to_date(#{endDate},'YYYY-MM-DD')
+        )
+
+    </select>
+
+    <!-- 获取部门一个季度的书表任务列表 -->
+    <select id="getDeptAllBookWorkListInAQuarter" parameterType="String" resultType="com.startest.wm.pojo.wm_task_distribution">
+        select distinct distribution_id,
+        task_index_id,
+        dept_id,
+        product_type,
+        data_code,
+        data_name,
+        user_duty,
+        work_days from wm_task_distribution where
+        product_type='书表'
+        and user_duty='作业'
+        and dept_id=#{deptID}
+        and task_index_id in(
+        select index_id from wm_task_index where task_year=#{year}
+        and task_end_date &gt;= to_date(#{startDate},'YYYY-MM-DD')
+        and task_end_date &lt; to_date(#{endDate},'YYYY-MM-DD')
+        )
+    </select>
+
+    <!-- 获取人员一年中业务的总工天数 -->
+    <select id="getUserOneYearAllWorkDays" parameterType="String" resultType="Double">
+        select sum(work_days) from wm_task_distribution where user_id=#{userID} and task_index_id in(
+        select index_id from wm_task_index where task_year=#{year}
+        )
+    </select>
+
+    <!--插入任务执行单信息-->
+    <insert id="insertTaskDistribution" parameterType="com.startest.wm.pojo.wm_task_distribution">
+        insert into wm_task_distribution(
+        <include refid="taskDistributionCol"></include>
+        ) values (
+        #{distribution_id},
+        #{task_index_id},
+        #{dept_id},
+        #{user_id},
+        #{user_name},
+        #{product_type},
+        #{data_code},
+        #{data_name},
+        #{distribution_type},
+        #{user_duty},
+        #{work_days},
+        to_date(#{start_date},'YYYY-MM-DD'),
+        to_date(#{end_date},'YYYY-MM-DD'),
+        #{remark}
+        )
+    </insert>
+    <!--更新任务执行单信息-->
+    <update id="updateTaskDistribution" parameterType="com.startest.wm.pojo.wm_task_distribution">
+        update wm_task_distribution set
+        user_id=#{user_id},
+        user_name=#{user_name},
+        distribution_type=#{distribution_type},
+        user_duty=#{user_duty},
+        work_days=#{work_days},
+        start_date=to_date(#{start_date},'YYYY-MM-DD'),
+        end_date=to_date(#{end_date},'YYYY-MM-DD'),
+        remark=#{remark}
+        where distribution_id=#{distribution_id}
+    </update>
+    <!--更新接受任务时间-->
+    <update id="updateTaskDistributionStartDate" parameterType="String">
+        update wm_task_distribution set
+        start_date=to_date(#{startDate},'YYYY-MM-DD')
+        where distribution_id=#{distributionID}
+    </update>
+    <!--更新完成任务时间-->
+    <update id="updateTaskDistributionEndDate" parameterType="String">
+        update wm_task_distribution set
+        end_date=to_date(#{endDate},'YYYY-MM-DD')
+        where distribution_id=#{distributionID}
+    </update>
+
+    <!--删除任务执行单信息-->
+    <delete id="delteTaskDistributiion" parameterType="String">
+        delete from wm_task_distribution where distribution_id=#{distributionID}
+    </delete>
+
+    <!--获取海图任务工天数（作业员的工天数）-->
+    <select id="getChartAllWorkDays" resultType="java.lang.Double">
+        select work_days  from wm_task_distribution
+          <where>
+              <if test="indexID != null and indexID != ''">
+                and task_index_id=#{indexID}
+              </if>
+              and product_type='海图'
+              <if test="productType != null and productType != ''">
+                and distribution_type=#{productType}
+              </if>
+              and user_duty='作业'
+          </where>
+    </select>
+
+    <!--获取书表任务工天数（单组作业员的工天数）-->
+    <select id="getBookAllWordDays" resultType="java.lang.Double">
+        select  max(work_days)  from wm_task_distribution
+          where  task_index_id=#{indexID} and product_type='书表'
+        <!--and distribution_type=#{productType}-->
+        and user_duty='作业'
+    </select>
+
+    <select id="getDuty" resultType="java.util.Map">
+        SELECT user_name,user_duty FROM wm_task_distribution WHERE  task_index_id = #{indexID}  AND dept_id = #{deptID}
+    </select>
+</mapper>

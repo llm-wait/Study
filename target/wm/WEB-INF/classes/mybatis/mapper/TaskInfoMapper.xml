@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.TaskInfoDao">
+
+    <sql id="taskInfoCols">
+        task_info_id,
+        task_index_id,
+        task_code,
+        task_start_date,
+        task_end_date,
+        task_level,
+        task_type_content,
+        task_days,
+        task_name,
+        task_content,
+        task_remark
+    </sql>
+    <!--检索任务单信息-->
+    <select id="selectTaskInfo" parameterType="com.startest.wm.pojo.wm_task_info"
+            resultType="com.startest.wm.pojo.wm_task_info">
+        select
+        <include refid="taskInfoCols">
+        </include>
+        from wm_task_info
+        <where>
+            <if test="task_info_id != null">
+                and task_info_id = #{task_info_id}
+            </if>
+            <if test="task_index_id != null">
+                and task_index_id = #{task_index_id}
+            </if>
+            <if test="task_code != null">
+                and task_code like concat('%', '#{task_code}', '%')
+            </if>
+            <if test="task_start_date != null">
+                <![CDATA[
+                and task_end_date >= to_date('#{task_start_date}', 'YYYY-MM-DD')
+                ]]>
+            </if>
+            <if test="task_end_date != null">
+                <![CDATA[
+                and task_start_date <= to_date('#{task_end_date}', 'YYYY-MM-DD')
+                ]]>
+            </if>
+            <if test="task_level != null">
+                and task_level like concat('%', '#{task_level}', '%')
+            </if>
+            <if test="task_type_content != null">
+                and task_type_content like concat('%', '#{task_type_content}', '%')
+            </if>
+            <if test="task_name != null">
+                and task_name like concat('%', '#{task_name}', '%')
+            </if>
+            <if test="task_class_id != null">
+                and task_index_id in (select index_id from wm_task_index where task_class_id = #{task_class_id})
+            </if>
+        </where>
+    </select>
+
+    <!--插入任务单信息-->
+    <insert id="insertTaskInfo" parameterType="com.startest.wm.pojo.wm_task_info">
+        insert into wm_task_info (
+        <include refid="taskInfoCols">
+        </include>
+        )
+                values (#{task_info_id},
+                        #{task_index_id},
+                        #{task_code},
+                        to_date(#{task_start_date}, 'YYYY-MM-DD'),
+                        to_date(#{task_end_date}, 'YYYY-MM-DD'),
+                        #{task_level},
+                        #{task_type_content},
+                        #{task_days},
+                        #{task_name},
+                        #{task_content},
+                        #{task_remark})
+    </insert>
+
+    <!--更新任务单信息-->
+    <update id="updateTaskInfo" parameterType="com.startest.wm.pojo.wm_task_info">
+        update wm_task_info set
+        task_code=#{task_code},
+        task_start_date=to_date(#{task_start_date},'YYYY-MM-DD'),
+        task_end_date=to_date(#{task_end_date},'YYYY-MM-DD'),
+        task_level=#{task_level},
+        task_type_content=#{task_type_content},
+        task_days=#{task_days},
+        task_name=#{task_name},
+        task_content=#{task_content},
+        task_remark=#{task_remark}
+        where task_info_id=#{task_info_id}
+    </update>
+
+    <!--删除任务单信息（通过任务单ID）-->
+    <delete id="deleteTaskInfoByTaskInfoId" parameterType="String">
+        delete from wm_task_info where task_info_id=#{taskInfoId}
+    </delete>
+
+    <!--删除任务单信息（通过任务索引ID）-->
+    <delete id="deleteTaskInfoByTaskIndexId" parameterType="String">
+        delete from wm_task_info where task_index_id=#{taskIndexId}
+    </delete>
+</mapper>
