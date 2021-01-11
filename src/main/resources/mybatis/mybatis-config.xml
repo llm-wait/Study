@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>
+        <!--允许驼峰命名法-->
+<!--        <setting name="mapUnderscoreToCamelCase" value="true"/>-->
+        <!--打印sql语句到控制台-->
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+    </settings>
+    <typeAliases>
+        <!--别名直接指定报名，在bean上没有注解的情况下，会使用bean的首字母小写的非限定类名作为它的别名-->
+        <package name="com.startest.wm.pojo"/>
+    </typeAliases>
+</configuration>

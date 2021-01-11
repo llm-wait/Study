@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.pojo.wm_quality_user">
+    <sql id="fieldlist">
+        quser_id,
+        task_index_id,
+        dept_id,
+        user_id,
+        dept_name,
+        user_name,
+        task_year,
+        product_type,
+        product_code,
+        user_workdays,
+        average_workdays,
+        workdays_factor,
+        remove_error_rate,
+        standard_score,
+        performance_evaluation,
+        task_quarter
+    </sql>
+
+    <!-- 检索校对审查个人工作质量测评信息 -->
+    <select id="selectChartUserQualityInfoList" parameterType="com.startest.wm.pojo.wm_quality_user" resultType="com.startest.wm.pojo.wm_quality_user">
+        select 
+         <include refid="fieldlist"></include>
+         from wm_quality_user where 1=1
+        <if test="quser_id!=null">
+            and quser_id=#{quser_id}
+        </if>
+        <if test="task_index_id!=null">
+            and task_index_id=#{task_index_id}
+        </if>
+        <if test="dept_id!=null">
+            and dept_id=#{dept_id}
+        </if>
+        <if test="user_id!=null">
+            and user_id=#{user_id}
+        </if>
+        <if test="task_year!=null">
+            and task_year=#{task_year}
+        </if>
+        <if test="task_quarter!=null">
+            and task_quarter=#{task_quarter}
+        </if>
+        <if test="product_type!=null">
+            and product_type=#{product_type}
+        </if>
+        <if test="product_code!=null">
+            and product_code=#{product_code}
+        </if>
+        <if test="performance_evaluation!=null">
+            and performance_evaluation=#{performance_evaluation}
+        </if>
+    </select>
+
+    <!-- 新增校对审查个人工作质量测评信息 -->
+    <insert id="insertChartUserQualityInfoList" parameterType="com.startest.wm.pojo.wm_quality_user">
+        insert into wm_quality_user (
+        <include refid="fieldlist"></include>
+        ) values (
+        #{quser_id},
+        #{task_index_id},
+        #{dept_id},
+        #{user_id},
+        #{dept_name},
+        #{user_name},
+        #{task_year},
+        #{product_type},
+        #{product_code},
+        #{user_workdays},
+        #{average_workdays},
+        #{workdays_factor},
+        #{remove_error_rate},
+        #{standard_score},
+        #{performance_evaluation},
+        #{task_quarter}
+        )
+    </insert>
+
+    <!-- 修改校对审查个人工作质量测评信息 -->
+    <update id="updateChartUserQualityInfoList" parameterType="com.startest.wm.pojo.wm_quality_user">
+        update wm_quality_user set
+        dept_id=#{dept_id},
+        user_id=#{user_id},
+        dept_name=#{dept_name},
+        user_name=#{user_name},
+        task_year=#{task_year},
+        product_type=#{product_type},
+        product_code=#{product_code},
+        user_workdays=#{user_workdays},
+        average_workdays=#{average_workdays},
+        workdays_factor=#{workdays_factor},
+        remove_error_rate=#{remove_error_rate},
+        standard_score=#{standard_score},
+        performance_evaluation=#{performance_evaluation},
+        task_quarter=#{task_quarter} where quser_id=#{quser_id}
+    </update>
+
+    <!-- 删除校对审查个人工作质量测评信息 -->
+    <delete id="deleteChartUserQualityInfoList" parameterType="String">
+        delete from wm_quality_user where quser_id=#{strID}
+    </delete>
+</mapper>

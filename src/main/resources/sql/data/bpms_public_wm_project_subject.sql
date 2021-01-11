@@ -1,0 +1,1 @@
+INSERT INTO public.wm_project_subject (id, project_id, subject_name, subject_budget, subject_pay, subject_balance, subject_standard, subject_count, subject_use, subject_describe, remark, subject_received) VALUES ('325422C15A8549EE9F98C5E25D36572B', null, '12', '21', '-121', '21', '21', '21', null, null, null, '-121');

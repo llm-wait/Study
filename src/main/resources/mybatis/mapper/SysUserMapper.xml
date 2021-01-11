@@ -1,0 +1,516 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.SysUserDao">
+
+    <sql id="userFields">
+        user_id,user_name,user_login_name,pwd,salt,sex,mz,cssj,jg,lssj,jszw,ddsj,jx,jxsj,szdw,zc,zcsj,rwsj,hyzk,zzmm,rdsj,jgzh,sfzh,rylb,dyxl,dyxlyx,dyxlzy,dyxlbysj,dexl,dexlyx,dexlzy,dexlbysj,photo,sfjy
+    </sql>
+
+    <!--添加用户-->
+    <insert id="insertUser" parameterType="com.startest.wm.pojo.sys_user">
+        insert into sys_user(
+        <include refid="userFields"/>
+        )
+        values (
+        #{user_id},
+        #{user_name},
+        #{user_login_name},
+        #{pwd},
+        #{salt},
+        #{sex},
+        #{mz},
+        <choose>
+            <when test="cssj != null and cssj!=''">
+                to_date(#{cssj},'YYYY-MM-DD'),
+            </when>
+            <otherwise>
+                #{cssj},
+            </otherwise>
+        </choose>
+        #{jg},
+        <choose>
+            <when test="lssj != null and lssj!=''">
+                to_date(#{lssj},'YYYY-MM-DD'),
+            </when>
+            <otherwise>
+                #{lssj},
+            </otherwise>
+        </choose>
+        #{jszw},
+        <choose>
+            <when test="ddsj != null and ddsj!=''">
+                to_date(#{ddsj},'YYYY-MM-DD'),
+            </when>
+            <otherwise>
+                #{ddsj},
+            </otherwise>
+        </choose>
+        #{jx},
+        <choose>
+            <when test="jxsj != null and jxsj!=''">
+                to_date(#{jxsj},'YYYY-MM-DD'),
+            </when>
+            <otherwise>
+                #{jxsj},
+            </otherwise>
+        </choose>
+        #{szdw},
+        #{zc},
+        <choose>
+            <when test="zcsj != null and zcsj!=''">
+                to_date(#{zcsj},'YYYY-MM-DD'),
+            </when>
+            <otherwise>
+                #{zcsj},
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="rwsj != null and rwsj!=''">
+                to_date(#{rwsj},'YYYY-MM-DD'),
+            </when>
+            <otherwise>
+                #{rwsj},
+            </otherwise>
+        </choose>
+        #{hyzk},
+        #{zzmm},
+        <choose>
+            <when test="rdsj != null and rdsj!=''">
+                to_date(#{rdsj},'YYYY-MM-DD'),
+            </when>
+            <otherwise>
+                #{rdsj},
+            </otherwise>
+        </choose>
+        #{jgzh},
+        #{sfzh},
+        #{rylb},
+        #{dyxl},
+        #{dyxlyx},
+        #{dyxlzy},
+        <choose>
+            <when test="dyxlbysj != null and dyxlbysj!=''">
+                to_date(#{dyxlbysj},'YYYY-MM-DD'),
+            </when>
+            <otherwise>
+                #{dyxlbysj},
+            </otherwise>
+        </choose>
+        #{dexl},
+        #{dexlyx},
+        #{dexlzy},
+        <choose>
+            <when test="dexlbysj != null and dexlbysj!=''">
+                to_date(#{dexlbysj},'YYYY-MM-DD'),
+            </when>
+            <otherwise>
+                #{dexlbysj},
+            </otherwise>
+        </choose>
+        #{photo},
+        #{sfjy}
+        )
+    </insert>
+
+    <!--根据用户模型添加用户-->
+    <insert id="insertUserByModel" parameterType="com.startest.wm.model.SysUserModel">
+        insert into sys_user(
+        <include refid="userFields"/>
+        )
+        values (
+        #{user_id},
+        #{user_name},
+        #{user_login_name},
+        #{pwd},
+        #{salt},
+        #{sex},
+        #{mz},
+        <choose>
+            <when test="cssj != null and cssj!=''">
+                to_date(#{cssj},'YYYY-MM-DD'),
+            </when>
+            <otherwise>
+                #{cssj},
+            </otherwise>
+        </choose>
+        #{jg},
+        <choose>
+            <when test="lssj != null and lssj!=''">
+                to_date(#{lssj},'YYYY-MM-DD'),
+            </when>
+            <otherwise>
+                #{lssj},
+            </otherwise>
+        </choose>
+        #{jszw},
+        <choose>
+            <when test="ddsj != null and ddsj!=''">
+                to_date(#{lssj},'YYYY-MM-DD'),
+            </when>
+            <otherwise>
+                #{ddsj},
+            </otherwise>
+        </choose>
+        #{jx},
+        <choose>
+            <when test="jxsj != null and jxsj!=''">
+                to_date(#{jxsj},'YYYY-MM-DD'),
+            </when>
+            <otherwise>
+                #{jxsj},
+            </otherwise>
+        </choose>
+        #{szdw},
+        #{zc},
+        <choose>
+            <when test="zcsj != null and zcsj!=''">
+                to_date(#{zcsj},'YYYY-MM-DD'),
+            </when>
+            <otherwise>
+                #{zcsj},
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="rwsj != null and rwsj!=''">
+                to_date(#{rwsj},'YYYY-MM-DD'),
+            </when>
+            <otherwise>
+                #{rwsj},
+            </otherwise>
+        </choose>
+        #{hyzk},
+        #{zzmm},
+        <choose>
+            <when test="rdsj != null and rdsj!=''">
+                to_date(#{rdsj},'YYYY-MM-DD'),
+            </when>
+            <otherwise>
+                #{rdsj},
+            </otherwise>
+        </choose>
+        #{jgzh},
+        #{sfzh},
+        #{rylb},
+        #{dyxl},
+        #{dyxlyx},
+        #{dyxlzy},
+        <choose>
+            <when test="dyxlbysj != null and dyxlbysj!=''">
+                to_date(#{dyxlbysj},'YYYY-MM-DD'),
+            </when>
+            <otherwise>
+                #{dyxlbysj},
+            </otherwise>
+        </choose>
+        #{dexl},
+        #{dexlyx},
+        #{dexlzy},
+        <choose>
+            <when test="dexlbysj != null and dexlbysj!=''">
+                to_date(#{dexlbysj},'YYYY-MM-DD'),
+            </when>
+            <otherwise>
+                #{dexlbysj},
+            </otherwise>
+        </choose>
+        #{photo},
+        #{sfjy}
+        )
+    </insert>
+
+    <!--根据用户ID查询用户-->
+    <select id="queryByUserID" parameterType="java.lang.String" resultType="com.startest.wm.pojo.sys_user">
+        select
+        <include refid="userFields"/>
+        from sys_user
+        where user_id=#{user_id}
+    </select>
+
+    <!--根据真实姓名查询用户-->
+    <select id="queryByName" parameterType="java.lang.String" resultType="com.startest.wm.pojo.sys_user">
+        select
+        <include refid="userFields"/>
+        from sys_user
+        where user_name=#{userName}
+    </select>
+
+    <!--根据登录名查询用户-->
+    <select id="queryByLoginName" parameterType="java.lang.String" resultType="com.startest.wm.pojo.sys_user">
+        select
+        <include refid="userFields"/>
+        from sys_user
+        where user_login_name=#{loginName}
+    </select>
+
+    <!--自定义条件查询-->
+    <!--原来的语句，已没有这些字段
+    <if test="user_login_name!=null and user_login_name!=''">
+                and user_login_name like concat('%',#{user_login_name},'%')
+            </if>
+            <if test="jg!=null and jg!=''">
+                and jg like concat('%',#{jg},'%')
+            </if>
+            <if test="jx!=null and jx!=''">
+                and jx =#{jx}
+            </if>
+            <if test="szdw!=null and szdw!=''">
+                and szdw =#{szdw}
+            </if>
+            <if test="zc!=null and zc!=''">
+                and zc =#{zc}
+            </if>
+            <if test="hyzk!=null and hyzk!=''">
+                and hyzk =#{hyzk}
+            </if>
+            <if test="zzmm!=null and zzmm!=''">
+                and zzmm =#{zzmm}
+            </if>-->
+    <select id="queryUserByDefinition" parameterType="com.startest.wm.model.UserSearchModel"
+            resultType="com.startest.wm.pojo.sys_user">
+        select
+        <include refid="userFields"/>
+        from sys_user
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="user_name!=null and user_name!=''">
+                user_name like concat('%',#{user_name},'%')
+            </if>
+
+            <if test="rylb!=null and rylb!=''">
+                and rylb =#{rylb}
+            </if>
+            <if test="sfjy!=null and sfjy!='' or sfjy==0">
+                and sfjy=#{sfjy}
+            </if>
+        </trim>
+    </select>
+
+    <!--查询所有用户-->
+    <select id="queryAll" resultType="com.startest.wm.pojo.sys_user">
+        select
+        <include refid="userFields"/>
+        from sys_user
+    </select>
+
+    <!--根据用户ID查询所属部门-->
+    <select id="queryUserDept" parameterType="java.lang.String" resultType="com.startest.wm.pojo.sys_dept">
+        SELECT A.*
+        FROM sys_dept A
+        INNER JOIN sys_dept_station_user B
+        ON a.dept_id=B.dept_id
+        WHERE B.user_id=#{userID};
+    </select>
+
+    <!--根据用户ID查询用户模型-->
+    <select id="queryUserModelByUserID" resultType="com.startest.wm.model.SysUserModel">
+        SELECT d.dept_id as szbmID,d.dept_name as szbm,s.station_id as szgwID,s.station_name as szgw,u.*
+        FROM sys_dept d
+        INNER JOIN sys_dept_station_user r
+        ON d.dept_id=r.dept_id
+        INNER JOIN sys_station s
+        ON r.station_id=s.station_id
+        INNER JOIN sys_user u
+        ON r.user_id=u.user_id
+        WHERE u.user_id=#{user_id}
+    </select>
+
+    <!--根据用户登录名查询用户模型-->
+    <select id="queryUserModelByLoginName" resultType="com.startest.wm.model.SysUserModel">
+        SELECT d.dept_id as szbmID,d.dept_name as szbm,s.station_id as szgwID,s.station_name as szgw,u.*
+        FROM sys_dept d
+        INNER JOIN sys_dept_station_user r
+        ON d.dept_id=r.dept_id
+        INNER JOIN sys_station s
+        ON r.station_id=s.station_id
+        INNER JOIN sys_user u
+        ON r.user_id=u.user_id
+        WHERE u.user_login_name=#{loginName}
+        ORDER BY u.user_login_name
+    </select>
+
+    <!--自定义条件查询用户模型-->
+    <select id="queryUserModelByDefinition" parameterType="com.startest.wm.model.UserSearchModel"
+            resultType="com.startest.wm.model.SysUserModel">
+        SELECT d.dept_id as szbmID,s.station_name as szgw,u.*
+        FROM sys_dept d
+        INNER JOIN sys_dept_station_user r
+        ON d.dept_id=r.dept_id
+        INNER JOIN sys_station s
+        ON r.station_id=s.station_id
+        INNER JOIN sys_user u
+        ON r.user_id=u.user_id
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="user_name!=null and user_name!=''">
+                u.user_name like concat('%',#{user_name},'%')
+            </if>
+            <if test="rylb!=null and rylb!=''">
+                and u.rylb = #{rylb}
+            </if>
+            <if test="sfjy!=null and sfjy!='' or sfjy==0">
+                and u.sfjy=#{sfjy}
+            </if>
+        </trim>
+        ORDER BY u.user_login_name
+    </select>
+
+    <!--根据用户ids字符串查询用户模型-->
+    <select id="queryUserModelByIDs" resultType="com.startest.wm.model.SysUserModel">
+        SELECT d.dept_id as szbmID,s.station_name as szgw,u.*
+        FROM sys_dept d
+        INNER JOIN sys_dept_station_user r
+        ON d.dept_id=r.dept_id
+        INNER JOIN sys_station s
+        ON r.station_id=s.station_id
+        INNER JOIN sys_user u
+        ON r.user_id=u.user_id
+        where u.user_id in (
+        <foreach collection="list" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </select>
+
+    <!--查询所有用户模型-->
+    <select id="queryUserModelAll" resultType="com.startest.wm.model.SysUserModel">
+        SELECT d.dept_id as szbmID,s.station_id as szgwID,s.station_name as szgw,u.*
+        FROM sys_dept d
+        INNER JOIN sys_dept_station_user r
+        ON d.dept_id=r.dept_id
+        INNER JOIN sys_station s
+        ON r.station_id=s.station_id
+        INNER JOIN sys_user u
+        ON r.user_id=u.user_id
+        ORDER BY u.user_login_name
+    </select>
+
+    <!--更新用户-->
+    <update id="updateUser" parameterType="com.startest.wm.pojo.sys_user">
+        update sys_user
+        <trim prefix="set" suffixOverrides=",">
+            <if test="user_name!=null">user_name=#{user_name},</if>
+            <if test="user_login_name!=null">user_login_name=#{user_login_name},</if>
+            <if test="pwd!=null">pwd=#{pwd},</if>
+            salt=#{salt},
+            <if test="sex!=null">sex=#{sex},</if>
+            <if test="mz!=null">mz=#{mz},</if>
+            <choose>
+                <when test="cssj != null and cssj!=''">
+                    cssj=to_date(#{cssj},'YYYY-MM-DD'),
+                </when>
+                <otherwise>
+                    cssj=#{cssj},
+                </otherwise>
+            </choose>
+            <if test="jg!=null">jg=#{jg},</if>
+            <choose>
+                <when test="lssj != null and lssj!=''">
+                    lssj=to_date(#{lssj},'YYYY-MM-DD'),
+                </when>
+                <otherwise>
+                    lssj=#{lssj},
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="ddsj != null and ddsj!=''">
+                    ddsj=to_date(#{ddsj},'YYYY-MM-DD'),
+                </when>
+                <otherwise>
+                    ddsj=#{ddsj},
+                </otherwise>
+            </choose>
+            <if test="jszw!=null">jszw=#{jszw},</if>
+            jx=#{jx},
+            <choose>
+                <when test="jxsj != null and jxsj!=''">
+                    jxsj=to_date(#{jxsj},'YYYY-MM-DD'),
+                </when>
+                <otherwise>
+                    jxsj=#{jxsj},
+                </otherwise>
+            </choose>
+            <if test="szdw!=null">szdw=#{szdw},</if>
+            <if test="zc!=null">zc=#{zc},</if>
+            <choose>
+                <when test="zcsj != null and zcsj!=''">
+                    zcsj=to_date(#{zcsj},'YYYY-MM-DD'),
+                </when>
+                <otherwise>
+                    zcsj=#{zcsj},
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="rwsj != null and rwsj!=''">
+                    rwsj=to_date(#{rwsj},'YYYY-MM-DD'),
+                </when>
+                <otherwise>
+                    rwsj=#{rwsj},
+                </otherwise>
+            </choose>
+            <if test="hyzk!=null">hyzk=#{hyzk},</if>
+            <if test="zzmm!=null">zzmm=#{zzmm},</if>
+            <choose>
+                <when test="rdsj != null and rdsj!=''">
+                    rdsj=to_date(#{rdsj},'YYYY-MM-DD'),
+                </when>
+                <otherwise>
+                    rdsj=#{rdsj},
+                </otherwise>
+            </choose>
+            jgzh=#{jgzh},
+            <if test="sfzh!=null">sfzh=#{sfzh},</if>
+            <if test="rylb!=null">rylb=#{rylb},</if>
+            dyxl=#{dyxl},
+            dyxlyx=#{dyxlyx},
+            dyxlzy=#{dyxlzy},
+            <choose>
+                <when test="dyxlbysj != null and dyxlbysj!=''">
+                    dyxlbysj=to_date(#{dyxlbysj},'YYYY-MM-DD'),
+                </when>
+                <otherwise>
+                    dyxlbysj=#{dyxlbysj},
+                </otherwise>
+            </choose>
+            dexl=#{dexl},
+            dexlyx=#{dexlyx},
+            dexlzy=#{dexlzy},
+            <choose>
+                <when test="dexlbysj != null and dexlbysj!=''">
+                    dexlbysj=to_date(#{dexlbysj},'YYYY-MM-DD'),
+                </when>
+                <otherwise>
+                    dexlbysj=#{dexlbysj},
+                </otherwise>
+            </choose>
+            <if test="photo!=null">photo=#{photo},</if>
+            <if test="sfjy!=null and sfjy!='' or sfjy==0">sfjy=#{sfjy}</if>
+        </trim>
+        where user_id=#{user_id}
+    </update>
+
+    <!--禁用或启用用户-->
+    <update id="updateUserState">
+        update  sys_user set
+        sfjy=#{sfjy}
+        where user_id=#{user_id}
+    </update>
+
+    <!--删除用户-->
+    <delete id="deleteByUserID" parameterType="java.lang.String">
+        delete from sys_user where user_id=#{user_id}
+    </delete>
+
+    <!--获取用户相关详细信息-->
+    <select id="getUserDetailInfo" resultType="java.util.Map">
+        SELECT
+	    d.dept_id,d.dept_name,s.station_id,s.station_name,u.user_name,u.rylb
+        FROM
+        sys_dept d
+	    INNER JOIN sys_dept_station_user r ON d.dept_id = r.dept_id
+	    INNER JOIN sys_station s ON r.station_id = s.station_id
+	    INNER JOIN sys_user u ON r.user_id = u.user_id
+        WHERE
+	    u.user_id = #{userID}
+    </select>
+
+</mapper>

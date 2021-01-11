@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.TaskChartProductQualityDao">
+
+    <sql id="fieldlist">
+        chart_id,
+        task_index_id,
+        chart_type,
+        task_year,
+        chart_code,
+        chart_name,
+        paperchart_value,
+        elechart_value,
+        all_value,
+        chart_quality_evaluation,
+        quarter_number
+    </sql>
+
+    <!--海图产品质量查询-->
+    <select id="selectChartProductQualityList" parameterType="com.startest.wm.pojo.wm_quality_chart" resultType="com.startest.wm.pojo.wm_quality_chart">
+        select
+        <include refid="fieldlist"></include> from wm_quality_chart where 1=1
+         <if test="chart_type!=null">
+            and chart_type=#{chart_type}
+         </if>
+        <if test="task_year!=null">
+            and task_year=#{task_year}
+        </if>
+        <if test="quarter_number!=null">
+            and quarter_number=#{quarter_number}
+        </if>
+        <if test="chart_quality_evaluation!=null">
+            and chart_quality_evaluation=#{chart_quality_evaluation}
+        </if>
+    </select>
+
+    <!--员工产品关联查询-->
+    <select id="getUserChartProductTypeWordDays" parameterType="String" resultType="Double">
+        select sum(work_days) from wm_task_distribution a,wm_quality_chart b where a.task_index_id=b.task_index_id
+        <if test="user_id!=null">
+            and a.user_id=#{userID}
+        </if>
+        <if test="task_year!=null">
+            and b.task_year=#{year}
+        </if>
+        <if test="quarter_number!=null">
+            and b.quarter_number=#{quarterNum}
+        </if>
+        <if test="chart_quality_evaluation!=null">
+            and b.chart_quality_evaluation=#{state}
+        </if>
+    </select>
+
+    <!--新增海图产品质量信息-->
+    <insert id="insertChartProductQualityInfo" parameterType="com.startest.wm.pojo.wm_quality_chart" >
+        insert into wm_quality_chart(
+        <include refid="fieldlist"></include>
+        ) values (
+        #{chart_id},
+        #{task_index_id},
+        #{chart_type},
+        #{task_year},
+        #{chart_code},
+        #{chart_name},
+        #{paperchart_value},
+        #{elechart_value},
+        #{all_value},
+        #{chart_quality_evaluation},
+        #{quarter_number}
+        )
+    </insert>
+
+
+    <!--修改海图产品质量信息-->
+    <update id="updateChartProductQualityInfo" parameterType="com.startest.wm.pojo.wm_quality_chart" >
+        update wm_quality_chart set
+        chart_type=#{chart_type},
+        task_year=#{task_year},
+        chart_code=#{chart_code},
+        chart_name=#{chart_name},
+        paperchart_value=#{paperchart_value},
+        elechart_value=#{elechart_value},
+        all_value=#{all_value},
+        chart_quality_evaluation=#{chart_quality_evaluation},
+        quarter_number=#{quarter_number} where chart_id=#{chart_id}
+    </update>
+
+    <!--修改海图产品质量统计信息-->
+    <update id="updateChartProductQualityDataInfo" parameterType="com.startest.wm.pojo.wm_quality_chart" >
+        update wm_quality_chart set
+        paperchart_value=#{paperchart_value},
+        elechart_value=#{elechart_value},
+        all_value=#{all_value},
+        chart_quality_evaluation=#{chart_quality_evaluation} where chart_id=#{chart_id}
+    </update>
+
+    <!--删除海图产品质量信息-->
+    <delete id="deleteChartProductQualityInfo" parameterType="String">
+        delete from wm_quality_chart where chart_id=#{strID}
+    </delete>
+</mapper>

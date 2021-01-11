@@ -1,0 +1,789 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.SysDataOperationDao">
+
+    <!--****************************   海图资料相关 ***************************************-->
+
+    <sql id="mapFields">
+        map_id,map_code,map_cn_name,map_en_name,map_area,map_amass,map_scale,south_lat,north_lat,
+        west_lon,east_lon,publish_unit,publish_date,map_type,map_state,source_state,remark,kcqk,tggzs,xzlmjzb,sfgb,bc,shape
+    </sql>
+
+    <sql id="mapFieldsNoShape">
+        map_id,map_code,map_cn_name,map_en_name,map_area,map_amass,map_scale,south_lat,north_lat,
+        west_lon,east_lon,publish_unit,publish_date,map_type,map_state,source_state,remark,kcqk,tggzs,xzlmjzb,sfgb,bc
+    </sql>
+
+    <!--新增海图资料-->
+    <insert id="insertMapData" parameterType="com.startest.wm.pojo.map_data">
+        insert into map_data(
+        <include refid="mapFields"/>
+        )
+        values
+        (#{map_id},#{map_code},#{map_cn_name},#{map_en_name},#{map_area},#{map_amass},#{map_scale},#{south_lat},#{north_lat},#{west_lon},#{east_lon},#{publish_unit},#{publish_date},#{map_type},#{map_state},#{source_state},#{remark},#{kcqk},#{tggzs},#{xzlmjzb},#{sfgb},#{bc},${shape})
+    </insert>
+
+    <!--批量新增海图资料-->
+    <insert id="insertMapDataMany" parameterType="java.util.List">
+        insert into map_data(
+        <include refid="mapFields"/>
+        )
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.map_id},#{item.map_code},#{item.map_cn_name},#{item.map_en_name},#{item.map_area},#{item.map_amass},#{item.map_scale},#{item.south_lat},#{item.north_lat},#{item.west_lon},#{item.east_lon},#{item.publish_unit},#{item.publish_date},#{item.map_type},#{item.map_state},#{item.source_state},#{item.remark},#{item.kcqk},#{item.tggzs},#{item.xzlmjzb},#{item.sfgb},#{item.bc},${item.shape})
+        </foreach>
+    </insert>
+
+    <!--根据海图资料ID删除海图资料-->
+    <delete id="deleteMapDataByID">
+        delete  from map_data
+        where map_id=#{map_id}
+    </delete>
+
+    <!--根据海图资料编号删除海图资料-->
+    <delete id="deleteMapDataByMapCode">
+        delete from map_data
+        where map_code=#{map_code}
+    </delete>
+
+    <!--根据海图资料编号批量删除海图资料-->
+    <delete id="deleteMapDataMany" parameterType="java.util.List">
+        delete from map_data
+        where map_code in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!--更新海图资料-->
+    <update id="updateMapData" parameterType="com.startest.wm.pojo.map_data">
+        update map_data
+        <trim prefix="set" suffixOverrides=",">
+            <if test="map_code!=null">map_code=#{map_code},</if>
+            <if test="map_cn_name!=null">map_cn_name=#{map_cn_name},</if>
+            <if test="map_en_name!=null">map_en_name=#{map_en_name},</if>
+            <if test="map_area!=null">map_area=#{map_area},</if>
+            <if test="map_amass!=null">map_amass=#{map_amass},</if>
+            <if test="map_scale!=null and map_scale!=''">map_scale=#{map_scale},</if>
+            <if test="south_lat!=null">south_lat=#{south_lat},</if>
+            <if test="north_lat!=null">north_lat=#{north_lat},</if>
+            <if test="west_lon!=null">west_lon=#{west_lon},</if>
+            <if test="east_lon!=null">east_lon=#{east_lon},</if>
+            <if test="publish_unit!=null">publish_unit=#{publish_unit},</if>
+            <if test="publish_date!=null">publish_date=#{publish_date},</if>
+            <if test="map_type!=null">map_type=#{map_type},</if>
+            <if test="map_state!=null">map_state=#{map_state},</if>
+            <if test="source_state!=null">source_state=#{source_state},</if>
+            <if test="remark!=null">remark=#{remark},</if>
+            <if test="kcqk!=null">kcqk=#{kcqk},</if>
+            <if test="tggzs!=null">tggzs=#{tggzs},</if>
+            <if test="xzlmjzb!=null">xzlmjzb=#{xzlmjzb},</if>
+            <if test="sfgb!=null">sfgb=#{sfgb},</if>
+            <if test="bc!=null">bc=#{bc},</if>
+            <if test="shape!=null">shape=${shape}</if>
+        </trim>
+        <where>
+            map_id=#{map_id}
+        </where>
+    </update>
+
+    <!--批量更新海图资料状态-->
+    <update id="updateMapState">
+        update map_data
+        <choose>
+            <when test="mapState!=null and mapState=='已作废'">
+                set map_state=#{mapState},source_state=#{mapState}
+            </when>
+            <otherwise>
+                set map_state=#{mapState}
+            </otherwise>
+        </choose>
+        where map_code in
+        <foreach collection="mapCodes" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <!--根据海图资料ID查询海图资料对象，包含几何-->
+    <select id="queryByMapID" parameterType="java.lang.String" resultType="java.lang.String">
+        select jsonb_build_object(
+        'type', 'FeatureCollection',
+        'features', jsonb_agg(features.feature),
+        'count',features.count
+        )
+        from (
+        select jsonb_build_object(
+        'type', 'Feature',
+        'id', map_id,
+        'geometry', ST_AsGeoJSON(shape)::jsonb,
+        'properties', to_jsonb(result) - 'shape'
+        ) as feature
+        from(
+        select
+        <include refid="mapFields"/>
+        from map_data
+        where map_id=#{map_id}
+        order by map_code asc
+        ) result
+        ) features;
+    </select>
+
+    <!--根据海图资料ID查询海图资料对象，不包含几何-->
+    <select id="queryObjectByMapID" parameterType="java.lang.String" resultType="com.startest.wm.pojo.map_data">
+        select
+        <include refid="mapFieldsNoShape"/>
+        from map_data
+        where map_id=#{map_id}
+    </select>
+
+    <!--海图资料编号是否存在-->
+    <select id="isMapExist" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count (*) from map_data where map_code=#{map_code}
+    </select>
+
+    <!--根据海图资料编号查询海图资料对象，包含几何-->
+    <select id="queryByMapCode" parameterType="java.lang.String" resultType="java.lang.String">
+        select jsonb_build_object(
+        'type', 'FeatureCollection',
+        'features', jsonb_agg(features.feature),
+        'count',features.count
+        )
+        from (
+        select jsonb_build_object(
+        'type', 'Feature',
+        'id', map_id,
+        'geometry', ST_AsGeoJSON(shape)::jsonb,
+        'properties', to_jsonb(result) - 'shape'
+        ) as feature
+        from(
+        select
+        <include refid="mapFields"/>
+        from map_data
+        where map_code=#{map_code}
+        order by map_code asc
+        ) result
+        ) features
+    </select>
+
+    <!--根据海图资料编号查询海图资料对象，不包含几何-->
+    <select id="queryObjectByMapCode" parameterType="java.lang.String" resultType="com.startest.wm.pojo.map_data">
+        select
+        <include refid="mapFieldsNoShape"/>
+        from map_data
+        where map_code=#{mapCode}
+    </select>
+
+    <!--自定义条件查询海图资料,包含几何-->
+    <select id="queryMapData" parameterType="java.util.Map" resultType="java.lang.String">
+        select jsonb_build_object(
+        'type', 'FeatureCollection',
+        'features', jsonb_agg(features.feature),
+        'count',features.count
+        )
+        from (
+        select jsonb_build_object(
+        'type', 'Feature',
+        'id', map_id,
+        'geometry', ST_AsGeoJSON(shape)::jsonb,
+        'properties', to_jsonb(result) - 'map_id' - 'shape'
+        ) as feature
+        from(
+        select A.map_id,A.map_code,A.map_state,A.source_state,A.shape from
+        (select map_id,map_code,map_state,source_state,shape
+        from map_data
+        <trim prefix="where" prefixOverrides="and|or" suffixOverrides="and|or">
+            <if test="params.map_type!=null and params.map_type!=''">and map_type = #{params.map_type}</if>
+            <if test="params.map_cn_name!=null and params.map_cn_name!=''">and map_cn_name like
+                concat('%','${params.map_cn_name}','%')
+            </if>
+            <if test="params.map_en_name!=null and params.map_en_name!=''">and map_en_name like
+                concat('%','${params.map_en_name}','%')
+            </if>
+            <if test="params.map_code!=null and params.map_code!=''">and map_code=#{params.map_code}</if>
+            <if test="params.publish_unit!=null and params.publish_unit!=''">and publish_unit like
+                concat('%','${params.publish_unit}','%')
+            </if>
+            <if test="params.map_scale!=null">
+                and
+                <foreach collection="params.map_scale" item="item" open="(" close=")" separator="or">
+                    <if test="item!=null and item=='1:300万-1:1000万'">
+                        map_scale between 3000000 and 10000000
+                    </if>
+                    <if test="item!=null and item=='1:100万-1:200万'">
+                        map_scale between 1000000 and 2000000
+                    </if>
+                    <if test="item!=null and item=='1:50万-1:99万'">
+                        map_scale between 500000 and 990000
+                    </if>
+                    <if test="item!=null and item=='1:20万-1:49万'">
+                        map_scale between 200000 and 490000
+                    </if>
+                    <if test="item!=null and item=='1:10万-1:19万'">
+                        map_scale between 100000 and 190000
+                    </if>
+                    <if test="item!=null and item=='大于1:10万'">
+                        map_scale <![CDATA[<]]> 100000
+                    </if>
+                    <if test="item!=null and item=='1:50万'">
+                        map_scale=500000
+                    </if>
+                    <if test="item!=null and item=='1:20万'">
+                        map_scale=200000
+                    </if>
+                    <if test="item!=null and item=='1:10万'">
+                        map_scale=100000
+                    </if>
+                    <if test="item!=null and item=='1:5万'">
+                        map_scale=50000
+                    </if>
+                    <if test="item!=null and item=='大于1:8万'">
+                        map_scale <![CDATA[<]]> 80000 and map_scale != 50000
+                    </if>
+                </foreach>
+            </if>
+
+        </trim>
+        )A
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="params.source_state!=null and params.source_state!=''">source_state IN (${params.source_state})
+            </if>
+            <if test="params.map_state!=null and params.map_state!=''">or map_state IN (${params.map_state})</if>
+        </trim>
+        ) result
+        ) features
+    </select>
+
+    <!--自定义条件查询海图资料列表，不包含几何-->
+    <select id="queryListMapData" parameterType="java.util.Map"
+            resultType="com.startest.wm.pojo.map_data">
+        select
+        <include refid="mapFieldsNoShape"/>
+        from (select
+        <include refid="mapFieldsNoShape"/>
+        from map_data
+        <trim prefix="where" prefixOverrides="and|or" suffixOverrides="and|or">
+            <if test="params.map_type!=null and params.map_type!=''">and map_type = #{params.map_type}</if>
+            <if test="params.map_cn_name!=null and params.map_cn_name!=''">and map_cn_name like
+                concat('%','${params.map_cn_name}','%')
+            </if>
+            <if test="params.map_en_name!=null and params.map_en_name!=''">and map_en_name like
+                concat('%','${params.map_en_name}','%')
+            </if>
+            <if test="params.map_code!=null and params.map_code!=''">and map_code=#{params.map_code}</if>
+            <if test="params.publish_unit!=null and params.publish_unit!=''">and publish_unit like
+                concat('%','${params.publish_unit}','%')
+            </if>
+
+            <if test="params.startdate!=null and params.startdate!='' and params.enddate!=null and params.enddate!=''">
+                and CAST(publish_date as INTEGER) between ${params.startdate} and ${params.enddate}
+            </if>
+            <if test="params.startdate!=null and params.startdate!='' and params.enddate==null and params.enddate==''">
+                and CAST(publish_date as INTEGER) <![CDATA[>=]]> ${params.startdate}
+            </if>
+            <if test="params.startdate==null and params.startdate=='' and params.enddate!=null and params.enddate!=''">
+                and CAST(publish_date as INTEGER) <![CDATA[<=]]> ${params.enddate}
+            </if>
+            <if test="params.map_scale!=null">
+                and
+                <foreach collection="params.map_scale" item="item" open="(" close=")" separator="or">
+                    <if test="item!=null and item=='1:300万-1:1000万'">
+                        map_scale between 3000000 and 10000000
+                    </if>
+                    <if test="item!=null and item=='1:100万-1:200万'">
+                        map_scale between 1000000 and 2000000
+                    </if>
+                    <if test="item!=null and item=='1:50万-1:99万'">
+                        map_scale between 500000 and 990000
+                    </if>
+                    <if test="item!=null and item=='1:20万-1:49万'">
+                        map_scale between 200000 and 490000
+                    </if>
+                    <if test="item!=null and item=='1:10万-1:19万'">
+                        map_scale between 100000 and 190000
+                    </if>
+                    <if test="item!=null and item=='大于1:10万'">
+                        map_scale <![CDATA[<]]> 100000
+                    </if>
+                    <if test="item!=null and item=='1:50万'">
+                        map_scale=500000
+                    </if>
+                    <if test="item!=null and item=='1:20万'">
+                        map_scale=200000
+                    </if>
+                    <if test="item!=null and item=='1:10万'">
+                        map_scale=100000
+                    </if>
+                    <if test="item!=null and item=='1:5万'">
+                        map_scale=50000
+                    </if>
+                    <if test="item!=null and item=='大于1:8万'">
+                        map_scale <![CDATA[<]]> 80000 and map_scale != 50000
+                    </if>
+                </foreach>
+            </if>
+        </trim>
+        )A
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="params.source_state!=null and params.source_state!=''">source_state IN (${params.source_state})
+            </if>
+            <if test="params.map_state!=null and params.map_state!=''">or map_state IN (${params.map_state})</if>
+        </trim>
+        order by map_code asc
+    </select>
+
+    <!--查询所有海图资料-->
+    <select id="queryAllMapData" resultType="java.lang.String">
+        select jsonb_build_object(
+            'type', 'FeatureCollection',
+            'features', jsonb_agg(features.feature),
+            'count',features.count
+        )
+        from (
+            select jsonb_build_object(
+                'type',       'Feature',
+                'id',map_id,
+                'map_code',  map_code,
+                'geometry',   ST_AsGeoJSON(shape)::jsonb,
+                'properties', to_jsonb(result) - 'map_id' - 'shape'
+            ) as feature
+        from
+            (select map_id,map_code,map_state,source_state,shape from map_data order by map_code asc) result
+            ) features
+    </select>
+
+    <!--查询所有海图资料列表对象，不包含几何-->
+    <select id="queryAllMapObjectData" resultType="com.startest.wm.pojo.map_data">
+        select
+        <include refid="mapFieldsNoShape"/>
+        from map_data
+        order by map_code asc
+    </select>
+
+    <!--自定义查询海图对象列表，不包含几何-->
+    <select id="queryListMapData2" resultType="com.startest.wm.pojo.map_data">
+        select
+        <include refid="mapFieldsNoShape"/>
+        from map_data
+        where map_code in
+        <foreach collection="array" item="mapCode" index="index" open="(" close=")" separator=",">
+            #{mapCode}
+        </foreach>
+        order by map_code asc
+    </select>
+
+    <!--按点查询海图资料-->
+    <select id="queryMapDataByPoint" parameterType="java.lang.String" resultType="java.lang.String">
+        select jsonb_build_object(
+            'type', 'FeatureCollection',
+            'features', jsonb_agg(features.feature),
+			'count',features.count
+        )
+        from (
+                select jsonb_build_object(
+                    'type',       'Feature',
+                    'id',         map_id,
+                    'geometry',   ST_AsGeoJSON(shape)::jsonb,
+                    'properties', to_jsonb(result) - 'shape'
+                    ) as feature
+            from
+              (select * from map_data where ST_Intersects(
+        ST_GeomFromText(#{poi},4326), shape)) result
+        ) features;
+    </select>
+
+    <!--按面查询海图资料,包含几何-->
+    <select id="queryMapDataByPolygon" parameterType="java.lang.String" resultType="java.lang.String">
+        select jsonb_build_object(
+            'type', 'FeatureCollection',
+            'features', jsonb_agg(features.feature),
+			'count',features.count
+        )
+        from (
+                select jsonb_build_object(
+                    'type',       'Feature',
+                    'id',         map_id,
+                    'geometry',   ST_AsGeoJSON(shape)::jsonb,
+                    'properties', to_jsonb(result)-'map_id' - 'shape'
+                    ) as feature
+            from
+              (select map_id,map_code,map_state,source_state,shape from map_data where  ST_Intersects(
+        ST_GeomFromText(#{poly},4326), shape) order by map_code asc) result
+        ) features
+    </select>
+
+    <!--按面查询海图资料,不包含几何-->
+    <select id="queryMapListByPolygon" parameterType="java.lang.String" resultType="com.startest.wm.pojo.map_data">
+        select
+        <include refid="mapFieldsNoShape"/>
+        from map_data where ST_Intersects(
+        ST_GeomFromText(#{poly},4326), shape) order by map_code asc
+    </select>
+
+
+    <!--****************************   港口资料相关 ***************************************-->
+
+    <sql id="portFields">
+        port_id,port_num,port_cn_name,port_en_name,port_continent,port_country,port_sea,port_data_source,port_data_bs,port_data_bysj,port_lon,port_lat,port_state,source_state,port_type,bc,remark,shape
+    </sql>
+
+    <sql id="portFieldsNoShape">
+        port_id,port_num,port_cn_name,port_en_name,port_continent,port_country,port_sea,port_data_source,port_data_bs,port_data_bysj,port_lon,port_lat,port_state,source_state,port_type,bc,remark
+    </sql>
+
+    <!--插入港口资料-->
+    <insert id="insertPortData" parameterType="com.startest.wm.pojo.port_data">
+        insert into port_data(
+        <include refid="portFields"/>
+        )
+        values
+        (#{port_id},#{port_num},#{port_cn_name},#{port_en_name},#{port_continent},#{port_country},#{port_sea},#{port_data_source},#{port_data_bs},#{port_data_bysj},#{port_lon},#{port_lat},#{port_state},#{source_state},#{port_type},#{bc},#{remark},${shape}
+        )
+    </insert>
+
+    <!--批量插入港口资料-->
+    <insert id="insertPortDataMany" parameterType="java.util.List">
+        insert into port_data(
+        <include refid="portFields"/>
+        )
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.port_id},#{item.port_num},#{item.port_cn_name},#{item.port_en_name},#{item.port_continent},#{item.port_country},#{item.port_sea},#{item.port_data_source},#{item.port_data_bs},#{item.port_data_bysj},#{item.port_lon},#{item.port_lat},#{item.port_state},#{item.source_state},#{item.port_type},#{item.bc},#{item.remark},${item.shape})
+        </foreach>
+    </insert>
+
+    <!--根据港口资料ID删除港口资料-->
+    <delete id="deleteByPortID">
+        delete from port_data where port_id=#{port_id}
+    </delete>
+
+    <!--根据港口资料编号删除港口资料-->
+    <delete id="deleteByPortCode">
+        delete from port_data where port_num=#{port_num}
+    </delete>
+
+    <!--根据港口资料编号批量删除港口资料-->
+    <delete id="deletePortDataMany" parameterType="java.util.List">
+        delete from port_data
+        where port_num in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!--更新港口资料数据-->
+    <update id="updatePortData" parameterType="com.startest.wm.pojo.port_data">
+        update port_data
+        <trim prefix="set" suffixOverrides=",">
+            <if test="port_num!=null">port_num=#{port_num},</if>
+            <if test="port_cn_name!=null">port_cn_name=#{port_cn_name},</if>
+            <if test="port_en_name!=null">port_en_name=#{port_en_name},</if>
+            <if test="port_continent!=null">port_continent=#{port_continent},</if>
+            <if test="port_country!=null">port_country=#{port_country},</if>
+            <if test="port_sea!=null">port_sea=#{port_sea},</if>
+            <if test="port_data_source!=null">port_data_source=#{port_data_source},</if>
+            <if test="port_data_bs!=null">port_data_bs=#{port_data_bs},</if>
+            <if test="port_data_bysj!=null">port_data_bysj=#{port_data_bysj},</if>
+            <if test="port_lon!=null">port_lon=#{port_lon},</if>
+            <if test="port_lat!=null">port_lat=#{port_lat},</if>
+            <if test="port_state!=null">port_state=#{port_state},</if>
+            <if test="source_state!=null">source_state=#{source_state},</if>
+            <if test="port_type!=null">port_type=#{port_type},</if>
+            bc=#{bc},
+            remark=#{remark},
+            <if test="shape!=null">shape=${shape}</if>
+        </trim>
+        <where>
+            port_id=#{port_id}
+        </where>
+    </update>
+
+    <!--批量更新港口资料状态-->
+    <update id="updatePortState">
+        update port_data
+        <choose>
+            <when test="portState!=null and portState=='已作废'">
+                set port_state=#{portState},source_state=#{portState}
+            </when>
+            <otherwise>
+                set port_state=#{portState}
+            </otherwise>
+        </choose>
+        where port_num in
+        <foreach collection="portNums" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <!--根据港口资料ID查询港口资料-->
+    <select id="queryByPortID" resultType="java.lang.String">
+        select jsonb_build_object(
+        'type', 'FeatureCollection',
+        'features', jsonb_agg(features.feature),
+        'count',features.count
+        )
+        from (
+        select jsonb_build_object(
+        'type', 'Feature',
+        'id', port_id,
+        'geometry', ST_AsGeoJSON(shape)::jsonb,
+        'properties', to_jsonb(result) - 'shape'
+        ) as feature
+        from(
+        select
+        <include refid="portFields"/>
+        from port_data
+        where port_id=#{port_id} order by port_num asc) result
+        ) features
+    </select>
+
+    <!--根据港口资料ID查询港口资料，不包含几何-->
+    <select id="queryObjectByPortID" parameterType="java.lang.String" resultType="com.startest.wm.pojo.port_data">
+        select
+        <include refid="portFieldsNoShape"/>
+        from port_data
+        where port_id=#{portID}
+    </select>
+
+    <!--根据港口资料编号查询港口资料-->
+    <select id="queryByPortCode" resultType="java.lang.String">
+        select jsonb_build_object(
+        'type', 'FeatureCollection',
+        'features', jsonb_agg(features.feature),
+        'count',features.count
+        )
+        from (
+        select jsonb_build_object(
+        'type', 'Feature',
+        'id', port_id,
+        'geometry', ST_AsGeoJSON(shape)::jsonb,
+        'properties', to_jsonb(result) - 'shape'
+        ) as feature
+        from(
+        select
+        <include refid="portFields"/>
+        from port_data
+        where port_num=#{port_num} order by port_num asc) result
+        ) features
+    </select>
+
+    <!--根据港口资料编号查询港口资料，不包含几何-->
+    <select id="queryObjectByPortCode" parameterType="java.lang.String" resultType="com.startest.wm.pojo.port_data">
+        select
+        <include refid="portFieldsNoShape"/>
+        from port_data
+        where port_num=#{port_num}
+    </select>
+
+    <!--面查询查询港口资料列表对象-->
+    <select id="queryPortByPolygon" parameterType="java.lang.String" resultType="java.lang.String">
+        select jsonb_build_object(
+        'type', 'FeatureCollection',
+        'features', jsonb_agg(features.feature),
+        'count',features.count
+        )
+        from (
+        select jsonb_build_object(
+        'type', 'Feature',
+        'id', port_id,
+        'geometry', ST_AsGeoJSON(shape)::jsonb,
+        'properties', to_jsonb(result)-'port_id' - 'shape'
+        ) as feature
+        from(
+        select
+            port_id,port_num,port_cn_name,port_state,source_state,shape
+        from port_data
+        where ST_Intersects(
+        ST_GeomFromText(#{poly},4326), shape) order by port_num asc) result
+        ) features
+    </select>
+
+    <!--面查询查询港口资料列表,不包含几何-->
+    <select id="queryPortListByPolygon" parameterType="java.lang.String" resultType="com.startest.wm.pojo.port_data">
+        select
+        <include refid="portFieldsNoShape"/>
+        from port_data
+        where ST_Intersects(
+        ST_GeomFromText(#{poly},4326), shape) order by port_num asc
+    </select>
+
+    <!--自定义查询港口资料列表对象,包含几何-->
+    <select id="queryPortData" parameterType="com.startest.wm.pojo.port_data" resultType="java.lang.String">
+        select jsonb_build_object(
+        'type', 'FeatureCollection',
+        'features', jsonb_agg(features.feature),
+        'count',features.count
+        )
+        from (
+        select jsonb_build_object(
+        'type', 'Feature',
+        'id', port_id,
+        'geometry', ST_AsGeoJSON(shape)::jsonb,
+        'properties', to_jsonb(result)-'port_id' - 'shape'
+        ) as feature
+        from
+        (
+        select
+        port_id,port_num,port_cn_name,port_state,source_state,shape
+        from (select
+        port_id,port_num,port_cn_name,port_state,source_state,shape from port_data
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="params.port_type!=null and params.port_type!=''">
+                and port_type=#{params.port_type}
+            </if>
+            <if test="params.port_num!=null and params.port_num!=''">
+                and port_num=#{params.port_num}
+            </if>
+            <if test="params.port_cn_name!=null and params.port_cn_name!=''">
+                and port_cn_name like concat('%','${params.port_cn_name}','%')
+            </if>
+            <if test="params.port_en_name!=null and params.port_en_name!=''">
+                and port_en_name like concat('%','${params.port_en_name}','%')
+            </if>
+            <if test="params.port_continent!=null and params.port_continent!=''">
+                and port_continent like concat('%','${params.port_continent}','%')
+            </if>
+            <if test="params.port_country!=null and params.port_country!=''">
+                and port_country like concat('%','${params.port_country}','%')
+            </if>
+            <if test="params.port_sea!=null and params.port_sea!=''">
+                and port_sea like concat('%','${params.port_sea}','%')
+            </if>
+
+            <!--<if test="params.startdate!=null and params.startdate!='' and params.enddate!=null and params.enddate!=''">
+                and CAST(port_data_bs as INTEGER) between ${params.startdate} and ${params.enddate}
+            </if>
+            <if test="params.startdate!=null and params.startdate!='' and params.enddate==null and params.enddate==''">
+                and CAST(port_data_bs as INTEGER) <![CDATA[>=]]> ${params.startdate}
+            </if>
+            <if test="params.startdate==null and params.startdate=='' and params.enddate!=null and params.enddate!=''">
+                and CAST(port_data_bs as INTEGER) <![CDATA[<=]]> ${params.enddate}
+            </if>-->
+        </trim>
+        )A
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="params.source_state!=null and params.source_state!=''">
+                source_state IN(${params.source_state})
+            </if>
+            <if test="params.port_state!=null and params.port_state!=''">
+                or port_state IN(${params.port_state})
+            </if>
+        </trim>
+        ) result
+        ) features
+    </select>
+
+    <!--自定义查询港口资料列表，不包含几何-->
+    <select id="queryPortDataList" parameterType="com.startest.wm.pojo.port_data"
+            resultType="com.startest.wm.pojo.port_data">
+        select
+        <include refid="portFieldsNoShape"/>
+        from (select
+        <include refid="portFieldsNoShape"/>
+        from port_data
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="params.port_type!=null and params.port_type!=''">
+                and port_type=#{params.port_type}
+            </if>
+            <if test="params.port_num!=null and params.port_num!=''">
+                and port_num=#{params.port_num}
+            </if>
+            <if test="params.port_cn_name!=null and params.port_cn_name!=''">
+                and port_cn_name like concat('%','${params.port_cn_name}','%')
+            </if>
+            <if test="params.port_en_name!=null and params.port_en_name!=''">
+                and port_en_name like concat('%','${params.port_en_name}','%')
+            </if>
+            <if test="params.port_continent!=null and params.port_continent!=''">
+                and port_continent like concat('%','${params.port_continent}','%')
+            </if>
+            <if test="params.port_country!=null and params.port_country!=''">
+                and port_country like concat('%','${params.port_country}','%')
+            </if>
+            <if test="params.port_sea!=null and params.port_sea!=''">
+                and port_sea like concat('%','${params.port_sea}','%')
+            </if>
+            <if test="params.startdate!=null and params.startdate!='' and params.enddate!=null and params.enddate!=''">
+                and CAST(port_data_bs as INTEGER) between ${params.startdate} and ${params.enddate}
+            </if>
+            <if test="params.startdate!=null and params.startdate!='' and params.enddate==null and params.enddate==''">
+                and CAST(port_data_bs as INTEGER) <![CDATA[>=]]> ${params.startdate}
+            </if>
+            <if test="params.startdate==null and params.startdate=='' and params.enddate!=null and params.enddate!=''">
+                and CAST(port_data_bs as INTEGER) <![CDATA[<=]]> ${params.enddate}
+            </if>
+        </trim>
+        )A
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="params.source_state!=null and params.source_state!=''">
+                source_state IN(${params.source_state})
+            </if>
+            <if test="params.port_state!=null and params.port_state!=''">
+                or port_state IN(${params.port_state})
+            </if>
+        </trim>
+        order by port_num asc
+    </select>
+
+    <!--自定义查询港口资料，不包含几何-->
+    <select id="queryPortDataList2" resultType="com.startest.wm.pojo.port_data">
+        select
+        <include refid="portFieldsNoShape"/>
+        from port_data
+        where port_num in
+        <foreach collection="array" item="portNum" index="index" open="(" close=")" separator=",">
+            #{portNum}
+        </foreach>
+        order by port_num asc
+    </select>
+
+    <!--港口资料编号是否存在-->
+    <select id="isPortExist" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count (*) from port_data where port_num=#{port_num}
+    </select>
+
+    <!--查询所有港口资料数据-->
+    <select id="queryAllPortData" resultType="java.lang.String">
+        select jsonb_build_object(
+            'type',     'FeatureCollection',
+            'features', jsonb_agg(features.feature),
+			'count',features.count
+        )
+        from (
+                select jsonb_build_object(
+                    'type',       'Feature',
+                    'id',         port_id,
+                    'geometry',   ST_AsGeoJSON(shape)::jsonb,
+                    'properties', to_jsonb(result)-'port_id' - 'shape'
+                    ) as feature
+            from
+              (select port_id,port_num,port_cn_name,port_state,source_state,shape from port_data order by port_num asc) result
+        ) features
+    </select>
+
+    <!--查询所有的港口资料，不包含几何-->
+    <select id="queryAllPortObjectData" resultType="com.startest.wm.pojo.port_data">
+        select
+        <include refid="portFieldsNoShape"/>
+        from port_data order by port_num asc
+    </select>
+
+    <select id="getCartographyTaskByClassIdAndState"
+            resultType="com.startest.wm.pojo.vo.TaskVo">
+        Select *
+        from wm_task_index
+        <where>
+            and task_class_id in
+            <foreach collection="classId" item="val" open="(" close=")" separator=",">
+                #{val}
+            </foreach>
+            and task_state = #{state}
+        </where>
+    </select>
+
+    <!--根据港口编号查询港口信息-->
+    <select id="getPortDataByPortNum" resultType="com.startest.wm.pojo.port_data">
+        select * from port_data where port_num = #{portNum}
+    </select>
+</mapper>

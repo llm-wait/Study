@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.SysJghzgtDao">
+    <!--插入机关核准工天信息-->
+    <insert id="insert" parameterType="com.startest.wm.pojo.sys_jghzgt">
+       insert into
+       sys_jghzgt(id,dept_id,year,jghzgt,dept_name,dept_zrs,dept_kprs,dept_sjzgt,dept_kpzgt,dept_rjgt,dept_rjkpgt,dept_yxzgt,dept_yxkpzgt,dept_pjyxgt,dept_pjyxl,qspjgt,qspjyxl)
+       values
+       (#{id},#{dept_id},#{year},#{jghzgt},#{dept_name},#{dept_zrs},#{dept_kprs},#{dept_sjzgt},#{dept_kpzgt},#{dept_rjgt},#{dept_rjkpgt},#{dept_yxzgt},#{dept_yxkpzgt},#{dept_pjyxgt},#{dept_pjyxl},#{qspjgt},#{qspjyxl})
+    </insert>
+
+    <!--更新机关核准工天信息-->
+    <update id="update">
+        update sys_jghzgt
+        set
+        jghzgt= #{jghzgt},
+        dept_name= #{dept_name},
+        dept_zrs= #{dept_zrs},
+        dept_kprs= #{dept_kprs},
+        dept_sjzgt= #{dept_sjzgt},
+        dept_kpzgt= #{dept_kpzgt},
+        dept_rjgt= #{dept_rjgt},
+        dept_rjkpgt= #{dept_rjkpgt},
+        dept_yxzgt= #{dept_yxzgt},
+        dept_yxkpzgt= #{dept_yxkpzgt},
+        dept_pjyxgt= #{dept_pjyxgt},
+        dept_pjyxl= #{dept_pjyxl},
+        qspjgt= #{qspjgt},
+        qspjyxl= #{qspjyxl}
+        where id=#{id}
+    </update>
+
+    <!--根据ID查询机关核准工天信息-->
+    <select id="queryByID" resultType="com.startest.wm.pojo.sys_jghzgt">
+        select id,dept_id,year,jghzgt,dept_name,dept_zrs,dept_kprs,dept_sjzgt,dept_kpzgt,dept_rjgt,dept_rjkpgt,dept_yxzgt,dept_yxkpzgt,dept_pjyxgt,dept_pjyxl,qspjgt,qspjyxl from sys_jghzgt where id=#{id}
+    </select>
+
+    <!--根据年份和部门ID查询机关核准工天信息-->
+    <select id="query" resultType="com.startest.wm.pojo.sys_jghzgt">
+        select id,dept_id,year,jghzgt,dept_name,dept_zrs,dept_kprs,dept_sjzgt,dept_kpzgt,dept_rjgt,dept_rjkpgt,dept_yxzgt,dept_yxkpzgt,dept_pjyxgt,dept_pjyxl,qspjgt,qspjyxl from sys_jghzgt where year=#{year} and dept_id=#{deptID}
+    </select>
+</mapper>

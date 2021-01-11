@@ -1,0 +1,3 @@
+INSERT INTO public.wm_form_book (form_id, book_jcode, book_code, book_name, book_standard_code, book_unit_post, book_edit, book_post_title, remark) VALUES ('3D5EC4705FA747E98B6FA7D71910F6AD', '111', '11', '102', '11', '11', '11', '助理工程师', '');
+INSERT INTO public.wm_form_book (form_id, book_jcode, book_code, book_name, book_standard_code, book_unit_post, book_edit, book_post_title, remark) VALUES ('33E18E847B634F60BAA6AF637221223A', '123', '123', '1', '123', '11', '123', '助理工程师', '');
+INSERT INTO public.wm_form_book (form_id, book_jcode, book_code, book_name, book_standard_code, book_unit_post, book_edit, book_post_title, remark) VALUES ('C1EDF31820C943EA8D54919550A9A212', '123', '123', '123', '123', '123', '123', '助理工程师', '');

@@ -1,0 +1,1091 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.SysZYDanDao">
+
+    <!--mapsql-->
+    <sql id="mapFields">
+        id,task_index_id,task_year,task_type,task_name,task_state,bh,map_code,map_name,sb,hsf,ctcc,bjy,zyy,ysy,ys,yss,yz,kb,zs,mj,cbsj,wcsj,bc,yc,fm,csy,yzls,jcrq,ccrq,remark,kdr
+    </sql>
+
+    <!--********************************map之MY*********************************-->
+
+    <!--插入map相关制印单-->
+    <insert id="insertMapMZyd">
+        insert into jcd_mapm(
+        <include refid="mapFields"/>
+        )values (
+        #{id},
+        #{task_index_id},
+        #{task_year},
+        #{task_type},
+        #{task_name},
+        #{task_state},
+        #{bh},
+        #{map_code},
+        #{map_name},
+        #{sb},
+        #{hsf},
+        #{ctcc},
+        #{bjy},
+        #{zyy},
+        #{ysy},
+        #{ys},
+        #{yss},
+        #{yz},
+        #{kb},
+        #{zs},
+        #{mj},
+        #{cbsj},
+        #{wcsj},
+        #{bc},
+        #{yc},
+        #{fm},
+        #{csy},
+        #{yzls},
+        #{jcrq},
+        #{ccrq},
+        #{remark},
+        #{kdr}
+        )
+    </insert>
+
+    <!--批量插入jcd_map-->
+    <insert id="insertMapMZydMany">
+        insert into jcd_mapm(
+        <include refid="mapFields"/>
+        )
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.id},#{item.task_index_id},#{item.task_year},#{item.task_type},#{item.task_name},#{item.task_state},#{item.bh},#{item.map_code},#{item.map_name},#{item.sb},#{item.hsf},#{item.ctcc},#{item.bjy},#{item.zyy},#{item.ysy},#{item.ys},#{item.yss},#{item.yz},#{item.kb},#{item.zs},#{item.mj},#{item.cbsj},#{item.wcsj},#{item.bc},#{item.yc},#{item.fm},#{item.csy},#{item.yzls},#{item.jcrq},#{item.ccrq},#{item.remark},#{item.kdr})
+        </foreach>
+    </insert>
+
+    <!--更新map制印单-->
+    <update id="updateMapMZyd">
+        update jcd_mapm
+        <trim prefix="set" suffixOverrides=",">
+            task_year=#{task_year},
+            task_type=#{task_type},
+            task_name=#{task_name},
+            task_state=#{task_state},
+            map_code=#{map_code},
+            map_name=#{map_name},
+            sb=#{sb},
+            bjy=#{bjy},
+            zyy=#{zyy},
+            ysy=#{ysy},
+            bh=#{bh},
+            hsf=#{hsf},
+            ctcc=#{ctcc},
+            ys=#{ys},
+            yss=#{yss},
+            yz=#{yz},
+            kb=#{kb},
+            zs=#{zs},
+            mj=#{mj},
+            cbsj=#{cbsj},
+            wcsj=#{wcsj},
+            bc=#{bc},
+            yc=#{yc},
+            fm=#{fm},
+            csy=#{csy},
+            yzls=#{yzls},
+            jcrq=#{jcrq},
+            ccrq=#{ccrq},
+            remark=#{remark},
+            kdr=#{kdr}
+        </trim>
+        where id=#{id}
+    </update>
+
+    <!--更新map制印单任务状态-->
+    <update id="updateMapMZydState" parameterType="java.lang.String">
+        update jcd_mapm
+        set task_state='已完成'
+        where id=#{id}
+    </update>
+
+    <!--根据IDh删除Map制印单-->
+    <delete id="deleteMapMZyd" parameterType="java.lang.String">
+        delete from  jcd_mapm where id=#{id}
+    </delete>
+
+    <!--根据ID查询Map制印单-->
+    <select id="queryMapMZydByID" resultType="com.startest.wm.pojo.jcd_mapm">
+        select
+        <include refid="mapFields"/>
+        from jcd_mapm
+        where id=#{id}
+    </select>
+
+    <!--根据编号查询Map制印单-->
+    <select id="queryMapMZydByBh" resultType="com.startest.wm.pojo.jcd_mapm">
+        select
+        <include refid="mapFields"/>
+        from jcd_mapm
+        where bh=#{bh}
+    </select>
+
+    <!--自定义查询Map相关的制印单-->
+    <select id="queryMapMZydByDefine" resultType="com.startest.wm.pojo.jcd_mapm">
+        select
+        <include refid="mapFields"/>
+        from jcd_mapm
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="taskYear!=null and taskYear!=''">task_year=#{taskYear}</if>
+            <if test="taskName!=null">and task_name like concat('%',#{taskName},'%')</if>
+            <if test="taskState!=null">and task_state=#{taskState}</if>
+            <if test="mapCode!=null">and map_code like concat('%',#{mapCode},'%')</if>
+            <if test="mapName!=null">and map_name like concat('%',#{mapName},'%')</if>
+            <if test="sb!=null">and sb like concat('%',#{sb},'%')</if>
+        </trim>
+        order by bh asc
+    </select>
+
+    <!--查询所有Map相关制印单-->
+    <select id="queryMapMZydAll" resultType="com.startest.wm.pojo.jcd_mapm">
+        select
+        <include refid="mapFields"/>
+        from jcd_mapm
+        order by bh asc
+    </select>
+
+    <!--********************************map之JY*********************************-->
+
+    <!--插入map相关制印单-->
+    <insert id="insertMapJZyd">
+        insert into jcd_mapj(
+        <include refid="mapFields"/>
+        )values (
+        #{id},
+        #{task_index_id},
+        #{task_year},
+        #{task_type},
+        #{task_name},
+        #{task_state},
+        #{bh},
+        #{map_code},
+        #{map_name},
+        #{sb},
+        #{hsf},
+        #{ctcc},
+        #{bjy},
+        #{zyy},
+        #{ysy},
+        #{ys},
+        #{yss},
+        #{yz},
+        #{kb},
+        #{zs},
+        #{mj},
+        #{cbsj},
+        #{wcsj},
+        #{bc},
+        #{yc},
+        #{fm},
+        #{csy},
+        #{yzls},
+        #{jcrq},
+        #{ccrq},
+        #{remark},
+        #{kdr}
+        )
+    </insert>
+
+    <!--批量插入jcd_mapj-->
+    <insert id="insertMapJZydMany">
+        insert into jcd_mapj(
+        <include refid="mapFields"/>
+        )
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.id},#{item.task_index_id},#{item.task_year},#{item.task_type},#{item.task_name},#{item.task_state},#{item.bh},#{item.map_code},#{item.map_name},#{item.sb},#{item.hsf},#{item.ctcc},#{item.bjy},#{item.zyy},#{item.ysy},#{item.ys},#{item.yss},#{item.yz},#{item.kb},#{item.zs},#{item.mj},#{item.cbsj},#{item.wcsj},#{item.bc},#{item.yc},#{item.fm},#{item.csy},#{item.yzls},#{item.jcrq},#{item.ccrq},#{item.remark},#{item.kdr})
+        </foreach>
+    </insert>
+
+    <!--更新map制印单-->
+    <update id="updateMapJZyd">
+        update jcd_mapj
+        <trim prefix="set" suffixOverrides=",">
+            task_year=#{task_year},
+            task_type=#{task_type},
+            task_name=#{task_name},
+            task_state=#{task_state},
+            map_code=#{map_code},
+            map_name=#{map_name},
+            sb=#{sb},
+            bjy=#{bjy},
+            zyy=#{zyy},
+            ysy=#{ysy},
+            bh=#{bh},
+            hsf=#{hsf},
+            ctcc=#{ctcc},
+            ys=#{ys},
+            yss=#{yss},
+            yz=#{yz},
+            kb=#{kb},
+            zs=#{zs},
+            mj=#{mj},
+            cbsj=#{cbsj},
+            wcsj=#{wcsj},
+            bc=#{bc},
+            yc=#{yc},
+            fm=#{fm},
+            csy=#{csy},
+            yzls=#{yzls},
+            jcrq=#{jcrq},
+            ccrq=#{ccrq},
+            remark=#{remark},
+            kdr=#{kdr}
+        </trim>
+        where id=#{id}
+    </update>
+
+    <!--更新map制印单任务状态-->
+    <update id="updateMapJZydState" parameterType="java.lang.String">
+        update jcd_mapj
+        set task_state='已完成'
+        where id=#{id}
+    </update>
+
+    <!--根据ID删除Map之军用制印单-->
+    <delete id="deleteMapJZyd" parameterType="java.lang.String">
+        delete from jcd_mapj where id=#{id}
+    </delete>
+
+    <!--根据ID查询Map制印单-->
+    <select id="queryMapJZydByID" resultType="com.startest.wm.pojo.jcd_mapj">
+        select
+        <include refid="mapFields"/>
+        from jcd_mapj
+        where id=#{id}
+    </select>
+
+    <!--根据编号查询Map制印单-->
+    <select id="queryMapJZydByBh" resultType="com.startest.wm.pojo.jcd_mapj">
+        select
+        <include refid="mapFields"/>
+        from jcd_mapj
+        where bh=#{bh}
+    </select>
+
+    <!--自定义查询Map相关的制印单-->
+    <select id="queryMapJZydByDefine" resultType="com.startest.wm.pojo.jcd_mapj">
+        select
+        <include refid="mapFields"/>
+        from jcd_mapj
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="taskYear!=null and taskYear!=''">task_year=#{taskYear}</if>
+            <if test="taskName!=null">and task_name like concat('%',#{taskName},'%')</if>
+            <if test="taskState!=null">and task_state=#{taskState}</if>
+            <if test="mapCode!=null">and map_code like concat('%',#{mapCode},'%')</if>
+            <if test="mapName!=null">and map_name like concat('%',#{mapName},'%')</if>
+            <if test="sb!=null">and sb like concat('%',#{sb},'%')</if>
+        </trim>
+        order by bh asc
+    </select>
+
+    <!--查询所有Map相关制印单-->
+    <select id="queryMapJZydAll" resultType="com.startest.wm.pojo.jcd_mapj">
+        select
+        <include refid="mapFields"/>
+        from jcd_mapj
+        order by bh asc
+    </select>
+
+    <!--********************************map之BZBD*********************************-->
+
+    <!--插入map相关制印单-->
+    <insert id="insertMapBZyd">
+        insert into jcd_mapb(
+        <include refid="mapFields"/>
+        )values (
+        #{id},
+        #{task_index_id},
+        #{task_year},
+        #{task_type},
+        #{task_name},
+        #{task_state},
+        #{bh},
+        #{map_code},
+        #{map_name},
+        #{sb},
+        #{hsf},
+        #{ctcc},
+        #{bjy},
+        #{zyy},
+        #{ysy},
+        #{ys},
+        #{yss},
+        #{yz},
+        #{kb},
+        #{zs},
+        #{mj},
+        #{cbsj},
+        #{wcsj},
+        #{bc},
+        #{yc},
+        #{fm},
+        #{csy},
+        #{yzls},
+        #{jcrq},
+        #{ccrq},
+        #{remark},
+        #{kdr}
+        )
+    </insert>
+
+    <!--批量插入jcd_mapb-->
+    <insert id="insertMapBZydMany">
+        insert into jcd_mapb(
+        <include refid="mapFields"/>
+        )
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.id},#{item.task_index_id},#{item.task_year},#{item.task_type},#{item.task_name},#{item.task_state},#{item.bh},#{item.map_code},#{item.map_name},#{item.sb},#{item.hsf},#{item.ctcc},#{item.bjy},#{item.zyy},#{item.ysy},#{item.ys},#{item.yss},#{item.yz},#{item.kb},#{item.zs},#{item.mj},#{item.cbsj},#{item.wcsj},#{item.bc},#{item.yc},#{item.fm},#{item.csy},#{item.yzls},#{item.jcrq},#{item.ccrq},#{item.remark},#{item.kdr})
+        </foreach>
+    </insert>
+
+    <!--更新map制印单-->
+    <update id="updateMapBZyd">
+        update jcd_mapb
+        <trim prefix="set" suffixOverrides=",">
+            task_year=#{task_year},
+            task_type=#{task_type},
+            task_name=#{task_name},
+            task_state=#{task_state},
+            map_code=#{map_code},
+            map_name=#{map_name},
+            sb=#{sb},
+            bjy=#{bjy},
+            zyy=#{zyy},
+            ysy=#{ysy},
+            bh=#{bh},
+            hsf=#{hsf},
+            ctcc=#{ctcc},
+            ys=#{ys},
+            yss=#{yss},
+            yz=#{yz},
+            kb=#{kb},
+            zs=#{zs},
+            mj=#{mj},
+            cbsj=#{cbsj},
+            wcsj=#{wcsj},
+            bc=#{bc},
+            yc=#{yc},
+            fm=#{fm},
+            csy=#{csy},
+            yzls=#{yzls},
+            jcrq=#{jcrq},
+            ccrq=#{ccrq},
+            remark=#{remark},
+            kdr=#{kdr}
+        </trim>
+        where id=#{id}
+    </update>
+
+    <!--更新map制印单任务状态-->
+    <update id="updateMapBZydState" parameterType="java.lang.String">
+        update jcd_mapb
+        set task_state='已完成'
+        where id=#{id}
+    </update>
+
+    <!--根据ID删除Map之保障部队制印单-->
+    <delete id="deleteMapBZyd" parameterType="java.lang.String">
+        delete from jcd_mapb where id=#{id}
+    </delete>
+
+    <!--根据ID查询Map制印单-->
+    <select id="queryMapBZydByID" resultType="com.startest.wm.pojo.jcd_mapb">
+        select
+        <include refid="mapFields"/>
+        from jcd_mapb
+        where id=#{id}
+    </select>
+
+    <!--根据编号查询Map制印单-->
+    <select id="queryMapBZydByBh" resultType="com.startest.wm.pojo.jcd_mapb">
+        select
+        <include refid="mapFields"/>
+        from jcd_mapb
+        where bh=#{bh}
+    </select>
+
+    <!--自定义查询Map相关的制印单-->
+    <select id="queryMapBZydByDefine" resultType="com.startest.wm.pojo.jcd_mapb">
+        select
+        <include refid="mapFields"/>
+        from jcd_mapb
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="taskYear!=null and taskYear!=''">task_year=#{taskYear}</if>
+            <if test="taskName!=null">and task_name like concat('%',#{taskName},'%')</if>
+            <if test="taskState!=null">and task_state=#{taskState}</if>
+            <if test="mapCode!=null">and map_code like concat('%',#{mapCode},'%')</if>
+            <if test="mapName!=null">and map_name like concat('%',#{mapName},'%')</if>
+            <if test="sb!=null">and sb like concat('%',#{sb},'%')</if>
+        </trim>
+        order by bh asc
+    </select>
+
+    <!--查询所有Map相关制印单-->
+    <select id="queryMapBZydAll" resultType="com.startest.wm.pojo.jcd_mapb">
+        select
+        <include refid="mapFields"/>
+        from jcd_mapb
+        order by bh asc
+    </select>
+
+    <!--************************************************************************-->
+
+    <!--booksql-->
+    <sql id="bookFields">
+        id,task_index_id,task_year,task_type,task_name,task_state,bh,sb,sh,sm,bjy,zyy,ysy,fmys,fmyss,nwys,nwyss,fmyz,fmyzs,nwyz,nwyzs,dsmys,fmtjy,sj,yz,kb,yinshu,mj,cbsj,wcsj,bc,yc,ymy,ys,zdyq,yzsl,fmbs,nwbs,jcrq,ccrq,remark,kdr
+    </sql>
+
+    <!--********************************book之MY*********************************-->
+
+    <!--新增book相关制印单-->
+    <insert id="insertBookMZyd" parameterType="com.startest.wm.pojo.jcd_bookm">
+        insert into jcd_bookm
+        (
+        <include refid="bookFields"/>
+        )values (
+        #{id},
+        #{task_index_id},
+        #{task_year},
+        #{task_type},
+        #{task_name},
+        #{task_state},
+        #{bh},
+        #{sb},
+        #{sh},
+        #{sm},
+        #{bjy},
+        #{zyy},
+        #{ysy},
+        #{fmys},
+        #{fmyss},
+        #{nwys},
+        #{nwyss},
+        #{fmyz},
+        #{fmyzs},
+        #{nwyz},
+        #{nwyzs},
+        #{dsmys},
+        #{fmtjy},
+        #{sj},
+        #{yz},
+        #{kb},
+        #{yinshu},
+        #{mj},
+        #{cbsj},
+        #{wcsj},
+        #{bc},
+        #{yc},
+        #{ymy},
+        #{ys},
+        #{zdyq},
+        #{yzsl},
+        #{fmbs},
+        #{nwbs},
+        #{jcrq},
+        #{ccrq},
+        #{remark},
+        #{kdr}
+        )
+    </insert>
+
+    <!--批量新增book相关制印单-->
+    <insert id="insertBookMZydMany">
+        insert into jcd_bookm(
+        <include refid="bookFields"/>
+        )
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.id},#{item.task_index_id},#{item.task_year},#{item.task_type},#{item.task_name},#{item.task_state},#{item.bh},#{item.sb},#{item.sh},#{item.sm},#{item.bjy},#{item.zyy},#{item.ysy},#{item.fmys},#{item.fmyss},#{item.nwys},#{item.nwyss},#{item.fmyz},#{item.fmyzs},#{item.nwyz},#{item.nwyzs},#{item.dsmys},#{item.fmtjy},#{item.sj},#{item.yz},#{item.kb},#{item.yinshu},#{item.mj},#{item.cbsj},#{item.wcsj},#{item.bc},#{item.yc},#{item.ymy},#{item.ys},#{item.zdyq},#{item.yzsl},#{item.fmbs},#{item.nwbs},#{item.jcrq},#{item.ccrq},#{item.remark},#{item.kdr})
+        </foreach>
+    </insert>
+
+    <!--更新book相关制印单-->
+    <update id="updateBookMZyd" parameterType="com.startest.wm.pojo.jcd_bookm">
+        update jcd_bookm
+        <trim prefix="set" suffixOverrides=",">
+            task_year=#{task_year},
+            task_type=#{task_type},
+            task_name=#{task_name},
+            task_state=#{task_state},
+            sh=#{sh},
+            sm=#{sm},
+            sb=#{sb},
+            bjy=#{bjy},
+            zyy=#{zyy},
+            ysy=#{ysy},
+            bh=#{bh},
+            fmys=#{fmys},
+            fmyss=#{fmyss},
+            nwys=#{nwys},
+            nwyss=#{nwyss},
+            fmyz=#{fmyz},
+            fmyzs=#{fmyzs},
+            nwyz=#{nwyz},
+            nwyzs=#{nwyzs},
+            dsmys=#{dsmys},
+            fmtjy=#{fmtjy},
+            sj=#{sj},
+            yz=#{yz},
+            kb=#{kb},
+            yinshu=#{yinshu},
+            mj=#{mj},
+            cbsj=#{cbsj},
+            wcsj=#{wcsj},
+            bc=#{bc},
+            yc=#{yc},
+            fmbs=#{fmbs},
+            nwbs=#{nwbs},
+            ymy=#{ymy},
+            ys=#{ys},
+            zdyq=#{zdyq},
+            remark=#{remark},
+            jcrq=#{jcrq},
+            ccrq=#{ccrq},
+            yzsl=#{yzsl},
+            kdr=#{kdr}
+        </trim>
+        where id=#{id}
+    </update>
+
+    <!--更新book相关制印单-->
+    <update id="updateBookMZydState" parameterType="java.lang.String">
+        update jcd_bookm
+        set task_state='已完成'
+        where id=#{id}
+    </update>
+
+    <!--根据ID删除book之民用相关制印单-->
+    <delete id="deleteBookMZyd" parameterType="java.lang.String">
+        delete from jcd_bookm where id=#{id}
+    </delete>
+
+    <!--根据ID查询book相关制印单-->
+    <select id="queryBookMZydByID" parameterType="java.lang.String" resultType="com.startest.wm.pojo.jcd_bookm">
+        select
+        <include refid="bookFields"/>
+        from jcd_bookm
+        where id=#{id}
+    </select>
+
+    <!--根据编号查询book相关制印单-->
+    <select id="queryBookMZydByBh" resultType="com.startest.wm.pojo.jcd_bookm">
+        select
+        <include refid="bookFields"/>
+        from jcd_bookm
+        where bh=#{bh}
+    </select>
+
+    <!--自定义查询book相关制印单-->
+    <select id="queryBookMZydByDefine" resultType="com.startest.wm.pojo.jcd_bookm">
+        select
+        <include refid="bookFields"/>
+        from jcd_bookm
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="taskYear!=null and taskYear!=''">task_year=#{taskYear}</if>
+            <if test="taskName!=null">and task_name like concat('%',#{taskName},'%')</if>
+            <if test="taskState!=null">and task_state=#{taskState}</if>
+            <if test="sh!=null">and sh like concat('%',#{sh},'%')</if>
+            <if test="sm!=null">and sm like concat('%',#{sm},'%')</if>
+            <if test="sb!=null">and sb like concat('%',#{sb},'%')</if>
+        </trim>
+        order by bh asc
+    </select>
+
+    <!--查询所有书表相关制印单-->
+    <select id="queryBookMZydAll" resultType="com.startest.wm.pojo.jcd_bookm">
+        select
+        <include refid="bookFields"/>
+        from jcd_bookm
+        order by bh asc
+    </select>
+
+
+    <!--********************************book之JY*********************************-->
+
+    <!--新增book相关制印单-->
+    <insert id="insertBookJZyd" parameterType="com.startest.wm.pojo.jcd_bookj">
+        insert into jcd_bookj
+        (
+        <include refid="bookFields"/>
+        )values (
+        #{id},
+        #{task_index_id},
+        #{task_year},
+        #{task_type},
+        #{task_name},
+        #{task_state},
+        #{bh},
+        #{sb},
+        #{sh},
+        #{sm},
+        #{bjy},
+        #{zyy},
+        #{ysy},
+        #{fmys},
+        #{fmyss},
+        #{nwys},
+        #{nwyss},
+        #{fmyz},
+        #{fmyzs},
+        #{nwyz},
+        #{nwyzs},
+        #{dsmys},
+        #{fmtjy},
+        #{sj},
+        #{yz},
+        #{kb},
+        #{yinshu},
+        #{mj},
+        #{cbsj},
+        #{wcsj},
+        #{bc},
+        #{yc},
+        #{ymy},
+        #{ys},
+        #{zdyq},
+        #{yzsl},
+        #{fmbs},
+        #{nwbs},
+        #{jcrq},
+        #{ccrq},
+        #{remark},
+        #{kdr}
+        )
+    </insert>
+
+    <!--批量新增book相关制印单-->
+    <insert id="insertBookJZydMany">
+        insert into jcd_bookj(
+        <include refid="bookFields"/>
+        )
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.id},#{item.task_index_id},#{item.task_year},#{item.task_type},#{item.task_name},#{item.task_state},#{item.bh},#{item.sb},#{item.sh},#{item.sm},#{item.bjy},#{item.zyy},#{item.ysy},#{item.fmys},#{item.fmyss},#{item.nwys},#{item.nwyss},#{item.fmyz},#{item.fmyzs},#{item.nwyz},#{item.nwyzs},#{item.dsmys},#{item.fmtjy},#{item.sj},#{item.yz},#{item.kb},#{item.yinshu},#{item.mj},#{item.cbsj},#{item.wcsj},#{item.bc},#{item.yc},#{item.ymy},#{item.ys},#{item.zdyq},#{item.yzsl},#{item.fmbs},#{item.nwbs},#{item.jcrq},#{item.ccrq},#{item.remark},#{item.kdr})
+        </foreach>
+    </insert>
+
+    <!--更新book相关制印单-->
+    <update id="updateBookJZyd" parameterType="com.startest.wm.pojo.jcd_bookj">
+        update jcd_bookj
+        <trim prefix="set" suffixOverrides=",">
+            task_year=#{task_year},
+            task_type=#{task_type},
+            task_name=#{task_name},
+            task_state=#{task_state},
+            sh=#{sh},
+            sm=#{sm},
+            sb=#{sb},
+            bjy=#{bjy},
+            zyy=#{zyy},
+            ysy=#{ysy},
+            bh=#{bh},
+            jcrq=#{jcrq},
+            fmys=#{fmys},
+            fmyss=#{fmyss},
+            nwys=#{nwys},
+            nwyss=#{nwyss},
+            fmyz=#{fmyz},
+            fmyzs=#{fmyzs},
+            nwyz=#{nwyz},
+            nwyzs=#{nwyzs},
+            dsmys=#{dsmys},
+            fmtjy=#{fmtjy},
+            sj=#{sj},
+            yz=#{yz},
+            kb=#{kb},
+            yinshu=#{yinshu},
+            mj=#{mj},
+            cbsj=#{cbsj},
+            wcsj=#{wcsj},
+            bc=#{bc},
+            yc=#{yc},
+            fmbs=#{fmbs},
+            nwbs=#{nwbs},
+            ymy=#{ymy},
+            ys=#{ys},
+            zdyq=#{zdyq},
+            remark=#{remark},
+            ccrq=#{ccrq},
+            yzsl=#{yzsl},
+            kdr=#{kdr}
+        </trim>
+        where id=#{id}
+    </update>
+
+    <!--更新book相关制印单-->
+    <update id="updateBookJZydState" parameterType="java.lang.String">
+        update jcd_bookj
+        set task_state='已完成'
+        where id=#{id}
+    </update>
+
+    <!--根据ID删除book之军用相关制印单-->
+    <delete id="deleteBookJZyd" parameterType="java.lang.String">
+        delete from jcd_bookj where id=#{id}
+    </delete>
+
+    <!--根据ID查询book相关制印单-->
+    <select id="queryBookJZydByID" parameterType="java.lang.String" resultType="com.startest.wm.pojo.jcd_bookj">
+        select
+        <include refid="bookFields"/>
+        from jcd_bookj
+        where id=#{id}
+    </select>
+
+    <!--根据编号查询book相关制印单-->
+    <select id="queryBookJZydByBh" resultType="com.startest.wm.pojo.jcd_bookj">
+        select
+        <include refid="bookFields"/>
+        from jcd_bookj
+        where bh=#{bh}
+    </select>
+
+    <!--自定义查询book相关制印单-->
+    <select id="queryBookJZydByDefine" resultType="com.startest.wm.pojo.jcd_bookj">
+        select
+        <include refid="bookFields"/>
+        from jcd_bookj
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="taskYear!=null and taskYear!=''">task_year=#{taskYear}</if>
+            <if test="taskName!=null">and task_name like concat('%',#{taskName},'%')</if>
+            <if test="taskState!=null">and task_state=#{taskState}</if>
+            <if test="sh!=null">and sh like concat('%',#{sh},'%')</if>
+            <if test="sm!=null">and sm like concat('%',#{sm},'%')</if>
+            <if test="sb!=null">and sb like concat('%',#{sb},'%')</if>
+        </trim>
+        order by bh asc
+    </select>
+
+    <!--查询所有书表相关制印单-->
+    <select id="queryBookJZydAll" resultType="com.startest.wm.pojo.jcd_bookj">
+        select
+        <include refid="bookFields"/>
+        from jcd_bookj
+        order by bh asc
+    </select>
+
+
+    <!--********************************book之BZBD*********************************-->
+
+    <!--新增book相关制印单-->
+    <insert id="insertBookBZyd" parameterType="com.startest.wm.pojo.jcd_bookb">
+        insert into jcd_bookb
+        (
+        <include refid="bookFields"/>
+        )values (
+        #{id},
+        #{task_index_id},
+        #{task_year},
+        #{task_type},
+        #{task_name},
+        #{task_state},
+        #{bh},
+        #{sb},
+        #{sh},
+        #{sm},
+        #{bjy},
+        #{zyy},
+        #{ysy},
+        #{fmys},
+        #{fmyss},
+        #{nwys},
+        #{nwyss},
+        #{fmyz},
+        #{fmyzs},
+        #{nwyz},
+        #{nwyzs},
+        #{dsmys},
+        #{fmtjy},
+        #{sj},
+        #{yz},
+        #{kb},
+        #{yinshu},
+        #{mj},
+        #{cbsj},
+        #{wcsj},
+        #{bc},
+        #{yc},
+        #{ymy},
+        #{ys},
+        #{zdyq},
+        #{yzsl},
+        #{fmbs},
+        #{nwbs},
+        #{jcrq},
+        #{ccrq},
+        #{remark},
+        #{kdr}
+        )
+    </insert>
+
+    <!--批量新增book相关制印单-->
+    <insert id="insertBookBZydMany">
+        insert into jcd_bookb(
+        <include refid="bookFields"/>
+        )
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.id},#{item.task_index_id},#{item.task_year},#{item.task_type},#{item.task_name},#{item.task_state},#{item.bh},#{item.sb},#{item.sh},#{item.sm},#{item.bjy},#{item.zyy},#{item.ysy},#{item.fmys},#{item.fmyss},#{item.nwys},#{item.nwyss},#{item.fmyz},#{item.fmyzs},#{item.nwyz},#{item.nwyzs},#{item.dsmys},#{item.fmtjy},#{item.sj},#{item.yz},#{item.kb},#{item.yinshu},#{item.mj},#{item.cbsj},#{item.wcsj},#{item.bc},#{item.yc},#{item.ymy},#{item.ys},#{item.zdyq},#{item.yzsl},#{item.fmbs},#{item.nwbs},#{item.jcrq},#{item.ccrq},#{item.remark},#{item.kdr})
+        </foreach>
+    </insert>
+
+    <!--更新book相关制印单-->
+    <update id="updateBookBZyd" parameterType="com.startest.wm.pojo.jcd_bookb">
+        update jcd_bookb
+        <trim prefix="set" suffixOverrides=",">
+            task_year=#{task_year},
+            task_type=#{task_type},
+            task_name=#{task_name},
+            task_state=#{task_state},
+            sh=#{sh},
+            sm=#{sm},
+            sb=#{sb},
+            bjy=#{bjy},
+            zyy=#{zyy},
+            ysy=#{ysy},
+            bh=#{bh},
+            jcrq=#{jcrq},
+            fmys=#{fmys},
+            fmyss=#{fmyss},
+            nwys=#{nwys},
+            nwyss=#{nwyss},
+            fmyz=#{fmyz},
+            fmyzs=#{fmyzs},
+            nwyz=#{nwyz},
+            nwyzs=#{nwyzs},
+            dsmys=#{dsmys},
+            fmtjy=#{fmtjy},
+            sj=#{sj},
+            yz=#{yz},
+            kb=#{kb},
+            yinshu=#{yinshu},
+            mj=#{mj},
+            cbsj=#{cbsj},
+            wcsj=#{wcsj},
+            bc=#{bc},
+            yc=#{yc},
+            fmbs=#{fmbs},
+            nwbs=#{nwbs},
+            ymy=#{ymy},
+            ys=#{ys},
+            zdyq=#{zdyq},
+            remark=#{remark},
+            ccrq=#{ccrq},
+            yzsl=#{yzsl},
+            kdr=#{kdr}
+        </trim>
+        where id=#{id}
+    </update>
+
+    <!--更新book相关制印单-->
+    <update id="updateBookBZydState" parameterType="java.lang.String">
+        update jcd_bookb
+        set task_state='已完成'
+        where id=#{id}
+    </update>
+
+    <!--根据ID删除book之保障部队相关制印单-->
+    <delete id="deleteBookBZyd" parameterType="java.lang.String">
+        delete from jcd_bookb where id=#{id}
+    </delete>
+
+    <!--根据ID查询book相关制印单-->
+    <select id="queryBookBZydByID" parameterType="java.lang.String" resultType="com.startest.wm.pojo.jcd_bookb">
+        select
+        <include refid="bookFields"/>
+        from jcd_bookb
+        where id=#{id}
+    </select>
+
+    <!--根据编号查询book相关制印单-->
+    <select id="queryBookBZydByBh" resultType="com.startest.wm.pojo.jcd_bookb">
+        select
+        <include refid="bookFields"/>
+        from jcd_bookb
+        where bh=#{bh}
+    </select>
+
+    <!--自定义查询book相关制印单-->
+    <select id="queryBookBZydByDefine" resultType="com.startest.wm.pojo.jcd_bookb">
+        select
+        <include refid="bookFields"/>
+        from jcd_bookb
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="taskYear!=null and taskYear!=''">task_year=#{taskYear}</if>
+            <if test="taskName!=null">and task_name like concat('%',#{taskName},'%')</if>
+            <if test="taskState!=null">and task_state=#{taskState}</if>
+            <if test="sh!=null">and sh like concat('%',#{sh},'%')</if>
+            <if test="sm!=null">and sm like concat('%',#{sm},'%')</if>
+            <if test="sb!=null">and sb like concat('%',#{sb},'%')</if>
+        </trim>
+        order by bh asc
+    </select>
+
+    <!--查询所有书表相关制印单-->
+    <select id="queryBookBZydAll" resultType="com.startest.wm.pojo.jcd_bookb">
+        select
+        <include refid="bookFields"/>
+        from jcd_bookb
+        order by bh asc
+    </select>
+
+    <!--*********************************************************************-->
+
+
+    <!--uvph-->
+    <sql id="uvphFields">
+        id,task_index_id,task_year,task_type,task_name,task_state,bh,map_code,map_name,sb,hsf,ctcc,bjy,zyy,ysy,ys,yss,yz,kb,zs,mj,cbsj,wcsj,bc,yc,fm,csy,yzls,jcrq,ccrq,remark,kdr
+    </sql>
+
+    <!--新增uvph相关制印单-->
+    <insert id="insertUvphZyd" parameterType="com.startest.wm.pojo.jcd_uvph">
+        insert into jcd_uvph(
+        <include refid="uvphFields"/>
+        )values(
+        #{id},
+        #{task_index_id},
+        #{task_year},
+        #{task_type},
+        #{task_name},
+        #{task_state},
+        #{bh},
+        #{map_code},
+        #{map_name},
+        #{sb},
+        #{hsf},
+        #{ctcc},
+        #{bjy},
+        #{zyy},
+        #{ysy},
+        #{ys},
+        #{yss},
+        #{yz},
+        #{kb},
+        #{zs},
+        #{mj},
+        #{cbsj},
+        #{wcsj},
+        #{bc},
+        #{yc},
+        #{fm},
+        #{csy},
+        #{yzls},
+        #{jcrq},
+        #{ccrq},
+        #{remark},
+        #{kdr}
+        )
+    </insert>
+
+    <!--批量新增uvph相关制印单-->
+    <insert id="insertUvphZydMany">
+        insert into jcd_uvph(
+        <include refid="uvphFields"/>
+        )
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.id},#{item.task_index_id},#{item.task_year},#{item.task_type},#{item.task_name},#{item.task_state},#{item.bh},#{item.map_code},#{item.map_name},#{item.sb},#{item.hsf},#{item.ctcc},#{item.bjy},#{item.zyy},#{item.ysy},#{item.ys},#{item.yss},#{item.yz},#{item.kb},#{item.zs},#{item.mj},#{item.cbsj},#{item.wcsj},#{item.bc},#{item.yc},#{item.fm},#{item.csy},#{item.yzls},#{item.jcrq},#{item.ccrq},#{item.remark},#{item.kdr})
+        </foreach>
+    </insert>
+
+    <!--更新uvph相关制印单-->
+    <update id="updateUvphZyd" parameterType="com.startest.wm.pojo.jcd_uvph">
+        update jcd_uvph
+        <trim prefix="set" suffixOverrides=",">
+            task_year=#{task_year},
+            task_type=#{task_type},
+            task_name=#{task_name},
+            task_state=#{task_state},
+            bh=#{bh},
+            map_code=#{map_code},
+            map_name=#{map_name},
+            sb=#{sb},
+            hsf=#{hsf},
+            ctcc=#{ctcc},
+            bjy=#{bjy},
+            zyy=#{zyy},
+            ysy=#{ysy},
+            ys=#{ys},
+            yss=#{yss},
+            yz=#{yz},
+            kb=#{kb},
+            zs=#{zs},
+            mj=#{mj},
+            cbsj=#{cbsj},
+            wcsj=#{wcsj},
+            bc=#{bc},
+            yc=#{yc},
+            fm=#{fm},
+            csy=#{csy},
+            yzls=#{yzls},
+            jcrq=#{jcrq},
+            ccrq=#{ccrq},
+            remark=#{remark},
+            kdr=#{kdr}
+        </trim>
+        where id=#{id}
+    </update>
+
+    <!--更新uvph相关制印单-->
+    <update id="updateUvphZydState">
+        update jcd_uvph
+        set task_state='已完成'
+        where id=#{id}
+    </update>
+
+    <!--根据ID删除uvph相关制印单-->
+    <delete id="deleteUvphZyd" parameterType="java.lang.String">
+        delete from jcd_uvph where id=#{id}
+    </delete>
+
+    <!--根据ID查询uvph相关制印单-->
+    <select id="queryUvphZydByID" parameterType="java.lang.String" resultType="com.startest.wm.pojo.jcd_uvph">
+        select
+        <include refid="uvphFields"/>
+        from jcd_uvph
+        where id=#{id}
+    </select>
+
+    <!--根据编号查询uvph相关制印单-->
+    <select id="queryUvphZydByBh" resultType="com.startest.wm.pojo.jcd_uvph">
+        select
+        <include refid="uvphFields"/>
+        from jcd_uvph
+        where bh=#{bh}
+    </select>
+
+    <!--自定义查询uvph相关制印单-->
+    <select id="queryUvphZydByDefine" resultType="com.startest.wm.pojo.jcd_uvph">
+        select
+        <include refid="uvphFields"/>
+        from jcd_uvph
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="taskYear!=null and taskYear!=''">task_year=#{taskYear}</if>
+            <if test="taskName!=null">and task_name like concat('%',#{taskName},'%')</if>
+            <if test="taskState!=null">and task_state=#{taskState}</if>
+            <if test="mapCode!=null">and map_code like concat('%',#{mapCode},'%')</if>
+            <if test="mapName!=null">and map_name like concat('%',#{mapName},'%')</if>
+            <if test="sb!=null">and sb like concat('%',#{sb},'%')</if>
+        </trim>
+        order by bh asc
+    </select>
+
+    <!--查询所有uvph相关制印单-->
+    <select id="queryUvphZydAll" resultType="com.startest.wm.pojo.jcd_uvph">
+        select
+        <include refid="uvphFields"/>
+        from jcd_uvph
+        order by bh asc
+    </select>
+
+</mapper>

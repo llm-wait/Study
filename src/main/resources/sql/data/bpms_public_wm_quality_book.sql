@@ -1,0 +1,1 @@
+INSERT INTO public.wm_quality_book (book_id, task_index_id, task_year, book_class, book_name, book_type, book_code, book_words, book_error_workdays, book_quality, book_edit_quality, book_evaluation, quarter_number) VALUES ('123', '7FEC7DA31F6147CBB38D9D7CB97E2921', '1970-01-08', '112', '105', '书表', '12', '12', '12', '21', '21', '12', '12');

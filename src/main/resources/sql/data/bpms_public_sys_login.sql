@@ -1,0 +1,10 @@
+INSERT INTO public.sys_login (id, login_name, login_pwd, dept_id, dept_name, role_name) VALUES ('a7812c7e95c7410599de18310dd20feb', 'zkoperator', '123456', null, null, '质控处操作员');
+INSERT INTO public.sys_login (id, login_name, login_pwd, dept_id, dept_name, role_name) VALUES ('fea8baaed53945c7a463252a57626d27', 'zkcm', '123456', null, null, '质控参谋');
+INSERT INTO public.sys_login (id, login_name, login_pwd, dept_id, dept_name, role_name) VALUES ('09fa1531e91d422fb5b4b7f5d9cefc6e', 'jhcm', '123456', null, null, '计划参谋');
+INSERT INTO public.sys_login (id, login_name, login_pwd, dept_id, dept_name, role_name) VALUES ('458f144dd18c4946845fe037cd76f91f', 'kycm', '123456', null, null, '科研参谋');
+INSERT INTO public.sys_login (id, login_name, login_pwd, dept_id, dept_name, role_name) VALUES ('7d8c26e0f13449aebec68b0ebbc7a221', 'zycm', '123456', null, null, '制印参谋');
+INSERT INTO public.sys_login (id, login_name, login_pwd, dept_id, dept_name, role_name) VALUES ('39b66aeaf2fc4d33b3305ec6d35a3435', 'cg', '123456', '8c9baca807c04a1d88eb93708d9466a4', null, '超级管理员');
+INSERT INTO public.sys_login (id, login_name, login_pwd, dept_id, dept_name, role_name) VALUES ('0e1e9407e52d435980de18a5994afe62', 'zghqzts', '123456', 'f18602be7ff14c918121d0fe7775fd51', '中国海区制图室', '作业室主任');
+INSERT INTO public.sys_login (id, login_name, login_pwd, dept_id, dept_name, role_name) VALUES ('7202d9d68a334bc89365bdc68ab446a7', 'zyoperator', '123456', 'f18602be7ff14c918121d0fe7775fd51', '中国海区制图室', '作业室操作员');
+INSERT INTO public.sys_login (id, login_name, login_pwd, dept_id, dept_name, role_name) VALUES ('5940c269540748dc8b3ade6aa0e729d2', 'ywc', '123456', '9f043e9a3a1540d39296da80d069af67', '业务处', '业务处');
+INSERT INTO public.sys_login (id, login_name, login_pwd, dept_id, dept_name, role_name) VALUES ('4c658185971f44d4acbb31de4b7ef3a5', 'sjzls', '123456', '2d5343aa9bce448191de8a7aa86ec1dc', '数据资料室', '作业室主任');

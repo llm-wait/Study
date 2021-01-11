@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.SysScoreDao">
+
+    <!--考评信息字段sql-->
+    <sql id="scoreSql">
+    id,kpnf,user_id,user_name,dept_id,dept_name,szxz,station_name,sfzz,zb,rylb,edgt,ywnl,gztd,cql,xlcj,bwcj,tbby,sfcykp,sfjg,errorinfo
+    </sql>
+
+    <!--******************************考评信息录入接口******************************-->
+    <!--添加考评成绩信息-->
+    <insert id="add" parameterType="com.startest.wm.pojo.sys_user_score">
+        insert into sys_user_score(
+        <include refid="scoreSql"/>
+        )values (
+        #{id},#{kpnf},#{user_id},#{user_name},#{dept_id},#{dept_name},#{szxz},#{station_name},#{sfzz},#{zb},#{rylb},#{edgt},#{ywnl},#{gztd},#{cql},#{xlcj},#{bwcj},#{tbby},#{sfcykp},#{sfjg},#{errorinfo}
+        )
+    </insert>
+
+    <!--删除考评成绩信息-->
+    <delete id="delete">
+        delete from sys_user_score where kpnf=#{year} and user_id=#{userID}
+    </delete>
+
+    <!--更新考评成绩信息-->
+    <update id="update" parameterType="com.startest.wm.pojo.sys_user_score">
+        update sys_user_score
+        set
+        user_id=#{user_id},
+        user_name=#{user_name},
+        dept_id=#{dept_id},
+        dept_name=#{dept_name},
+        szxz=#{szxz},
+        station_name=#{station_name},
+        sfzz=#{sfzz},
+        zb=#{zb},
+        rylb=#{rylb},
+        edgt=#{edgt},
+        ywnl=#{ywnl},
+        gztd=#{gztd},
+        cql=#{cql},
+        xlcj=#{xlcj},
+        bwcj=#{bwcj},
+        tbby=#{tbby},
+        sfcykp=#{sfcykp},
+        sfjg=#{sfjg},
+        errorinfo=#{errorinfo}
+        where id=#{id}
+    </update>
+
+    <!--根据用户ID获取指定年份考评成绩信息-->
+    <select id="findByUserID" resultType="com.startest.wm.pojo.sys_user_score">
+        select
+        <include refid="scoreSql"/>
+        from sys_user_score
+        where kpnf=#{year} and user_id=#{userID}
+    </select>
+
+    <!--根据部门ID获取指定年份考评成绩信息-->
+    <select id="findByDeptID" resultType="com.startest.wm.pojo.sys_user_score">
+        select
+        <include refid="scoreSql"/>
+        from sys_user_score
+        where kpnf=#{year} and dept_id=#{deptID}
+    </select>
+
+    <!--根据用户ID列表获取指定年份考评成绩信息-->
+    <select id="findMany" parameterType="list" resultType="com.startest.wm.pojo.sys_user_score">
+        select
+        <include refid="scoreSql"/>
+        from sys_user_score
+        where kpnf=#{year} and user_id in
+        <foreach collection="list" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </select>
+
+    <!--获取单位人员考评信息-->
+    <select id="getDeptScoreInfo" resultType="com.startest.wm.pojo.sys_user_score">
+        select
+        <include refid="scoreSql"/>
+        from sys_user_score
+        where kpnf=#{year} and dept_id=#{deptID}
+        <if test="isAll=='否'.toString()">
+            and sfcykp='是'
+        </if>
+    </select>
+
+    <!--获取全社人员考评信息-->
+    <select id="getAllScoreInfo" resultType="com.startest.wm.pojo.sys_user_score">
+        select
+        <include refid="scoreSql"/>
+        from sys_user_score
+        where kpnf=#{year}
+        <if test="isAll=='否'.toString()">
+            and sfcykp='是'
+        </if>
+    </select>
+
+</mapper>

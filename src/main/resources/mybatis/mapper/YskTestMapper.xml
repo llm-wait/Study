@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.YskTestDao">
+
+    <sql id="fields">
+        student_id,
+        student_name,
+        student_age,
+        student_address
+    </sql>
+
+    <select id="selectStudentList" parameterType="com.startest.wm.pojo.ysk_test"
+            resultType="com.startest.wm.pojo.ysk_test">
+        select
+        <include refid="fields">
+        </include>
+        from ysk_test
+        <where>
+            <if test="student_id != null">
+                and student_id = #{student_id}
+            </if>
+            <if test="student_name != null">
+                and student_name like concat('%', #{student_name}, '%')
+            </if>
+            <if test="student_age != null">
+
+                            and student_age=#{student_age}
+
+            </if>
+            <if test="student_address != null">
+
+                            and student_address like concat(' % ',#{student_address},' %')
+            </if>
+        </where>
+    </select>
+
+    <insert id="insertStudentInfo" parameterType="com.startest.wm.pojo.ysk_test">
+        insert into ysk_test (
+        <include refid="fields"></include>
+        ) values (
+        #{student_id},
+        #{student_name},
+        #{student_age},
+        #{student_address}
+        )
+    </insert>
+
+    <update id="updateStudentInfo" parameterType="com.startest.wm.pojo.ysk_test">
+        update ysk_test set
+        student_name=#{student_name},
+        student_age=#{student_age},
+        student_address=#{student_address}
+        where
+        student_id=#{student_id}
+    </update>
+
+    <delete id="deleteStudentInfo" parameterType="String">
+        delete from ysk_test where student_id=#{strID}
+    </delete>
+
+</mapper>

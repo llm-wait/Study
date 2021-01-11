@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.FormDataDao">
+    <sql id="formdatafield">
+        book_data_id,
+        book_jcode,
+        book_name,
+        book_describe,
+        book_edition,
+        book_impression,
+        book_edit,
+        book_publish,
+        book_impression_count
+    </sql>
+    <select id="selectFormDataListInfo" parameterType="com.startest.wm.pojo.wm_form_data" resultType="com.startest.wm.pojo.wm_form_data">
+        select
+        <include refid="formdatafield"></include>
+        from wm_form_data where 1=1
+        <if test="book_data_id!=null">
+            and book_data_id=#{book_data_id}
+        </if>
+    </select>
+
+    <select id="selectFormDataInfoByTaskIndexID"  parameterType="String" resultType="com.startest.wm.pojo.wm_form_data">
+        select
+        a.book_data_id,
+        a.book_jcode,
+        a.book_name,
+        a.book_describe,
+        a.book_edition,
+        a.book_impression,
+        a.book_edit,
+        a.book_publish,
+        a.book_impression_count
+        from wm_form_data a,wm_form_index b where a.book_data_id=b.form_id
+        and b.index_id=#{strID}
+    </select>
+
+    <insert id="addFormDataInfo" parameterType="com.startest.wm.pojo.wm_form_data">
+        insert into wm_form_data(
+        <include refid="formdatafield"></include>
+        ) values (
+        #{book_data_id},
+        #{book_jcode},
+        #{book_name},
+        #{book_describe},
+        #{book_edition},
+        #{book_impression},
+        #{book_edit},
+        #{book_publish},
+        #{book_impression_count}
+        )
+    </insert>
+    <update id="updateFormDataInfo" parameterType="com.startest.wm.pojo.wm_form_data">
+        update wm_form_data set
+        book_jcode=#{book_jcode},
+        book_name=#{book_name},
+        book_describe=#{book_describe},
+        book_edition=#{book_edition},
+        book_impression=#{book_impression},
+        book_edit=#{book_edit},
+        book_publish=#{book_publish},
+        book_impression_count=#{book_impression_count}
+        where book_data_id=#{book_data_id}
+    </update>
+    <delete id="deleteFormDataInfo" parameterType="String">
+        delete from wm_form_data where book_data_id=#{strID}
+    </delete>
+</mapper>

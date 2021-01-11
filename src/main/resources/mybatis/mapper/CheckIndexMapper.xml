@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.CheckIndexDao">
+    <sql id="fieldcols">
+        check_index_id,
+        task_index_id,
+        dept_id,
+        dept_name,
+        chart_book_code,
+        chart_book_name,
+        start_check_date,
+        chart_book_back,
+        chart_pdf_back,
+        chart_edit,
+        chart_map_edit,
+        chart_manager,
+        chart_manager_id,
+        chart_manager1,
+        chart_manager1_id,
+        distribution_type,
+        product_type
+    </sql>
+
+    <select id="selectCheckIndexInfo" parameterType="com.startest.wm.pojo.wm_check_index" resultType="com.startest.wm.pojo.wm_check_index">
+        select a.check_index_id,a.task_index_id,a.dept_id,a.dept_name,
+               b.data_name chart_book_name,
+               b.data_code chart_book_code
+        from wm_check_index a,
+             wm_task_index b
+        <where>
+            and a.task_index_id = b.index_id
+            <if test="check_index_id != null">
+                and check_index_id = #{check_index_id}
+            </if>
+            <if test="task_index_id != null">
+                and task_index_id = #{task_index_id}
+            </if>
+            <if test="dept_id != null">
+                and dept_id = #{dept_id}
+            </if>
+            <if test="distribution_type != null">
+                and distribution_type = #{distribution_type}
+            </if>
+            <if test="product_type != null">
+                and product_type = #{product_type}
+            </if>
+            <if test="chart_manager_id != null">
+                and chart_manager_id = #{chart_manager_id}
+            </if>
+            <if test="chart_manager1_id != null">
+                and chart_manager1_id = #{chart_manager1_id}
+            </if>
+        </where>
+    </select>
+
+    <select id="getUserChartEditProductCount" parameterType="String" resultType="Integer">
+        select count(*) from wm_task_index a,wm_check_index b where a.index_id=b.task_index_id and b.product_type='海图'
+         and a.task_year=#{year}
+         <if test="type==0 and isMain==0">
+            and b.chart_edit='是' and b.chart_manager_id=#{userID}
+         </if>
+        <if test="type==0 and isMain==1">
+            and b.chart_edit='是' and b.chart_manager1_id=#{userID}
+        </if>
+        <if test="type==1 and isMain==0">
+            and b.chart_map_edit='是' and b.chart_manager_id=#{userID}
+        </if>
+        <if test="type==1 and isMain==1">
+            and b.chart_map_edit='是' and b.chart_manager1_id=#{userID}
+        </if>
+    </select>
+
+    <insert id="insertCheckIndexInfo" parameterType="com.startest.wm.pojo.wm_check_index">
+        insert into wm_check_index(
+        check_index_id,
+        task_index_id,
+        dept_id,
+        dept_name,
+        chart_book_code,
+        chart_book_name,
+        distribution_type,
+        product_type
+        ) values (
+        #{check_index_id},
+        #{task_index_id},
+        #{dept_id},
+        #{dept_name},
+        #{chart_book_code},
+        #{chart_book_name},
+        #{distribution_type},
+        #{product_type}
+        )
+    </insert>
+
+    <update id="updateCheckIndexInfo" parameterType="com.startest.wm.pojo.wm_check_index">
+        update wm_check_index set
+        <if test="start_check_date != null and start_check_date != ''">
+            start_check_date=to_date(#{start_check_date},'YYYY-MM-DD'),
+        </if>
+        chart_book_back=#{chart_book_back},
+        chart_pdf_back=#{chart_pdf_back},
+        chart_edit=#{chart_edit},
+        chart_map_edit=#{chart_map_edit},
+        chart_manager=#{chart_manager},
+        chart_manager_id=#{chart_manager_id},
+        chart_manager1=#{chart_manager1},
+        chart_manager1_id=#{chart_manager1_id}
+        where check_index_id=#{check_index_id}
+        <if test="product_type=='海图'">
+            and distribution_type=#{distribution_type}
+        </if>
+    </update>
+
+    <delete id="deleteCheckIndexInfo" parameterType="String">
+        delete from wm_check_index where task_index_id=#{strID}
+    </delete>
+</mapper>

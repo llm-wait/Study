@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.TaskQualityMakeuserDao">
+    <sql id="fieldlist">
+        quser_id,
+        task_index_id,
+        dept_id,
+        user_id,
+        dept_name,
+        user_name,
+        task_year,
+        task_quarter,
+        product_type,
+        chart_code,
+        chart_name,
+        chart_error,
+        chart_result,
+        work_days
+    </sql>
+
+    <!-- 检索海图作业员个人质量测评信息 -->
+    <select id="selectMakeuserChartQualityInfo" parameterType="com.startest.wm.pojo.wm_quality_makeuser" resultType="com.startest.wm.pojo.wm_quality_makeuser">
+        select
+         <include refid="fieldlist"></include>
+         from wm_quality_makeuser where 1=1
+         <if test="quser_id!=null">
+             and quser_id=#{quser_id}
+         </if>
+        <if test="task_index_id!=null">
+            and task_index_id=#{task_index_id}
+        </if>
+        <if test="dept_id!=null">
+            and dept_id=#{dept_id}
+        </if>
+        <if test="user_id!=null">
+            and user_id=#{user_id}
+        </if>
+        <if test="task_year!=null">
+            and task_year=#{task_year}
+        </if>
+        <if test="task_quarter!=null">
+            and task_quarter=#{task_quarter}
+        </if>
+        <if test="product_type!=null">
+            and product_type=#{product_type}
+        </if>
+        <if test="chart_result!=null">
+            and chart_result=#{chart_result}
+        </if>
+    </select>
+
+    <!-- 新增海图作业员个人质量测评信息 -->
+    <insert id="insertMakeuserChartQualityInfo" parameterType="com.startest.wm.pojo.wm_quality_makeuser">
+        insert into wm_quality_makeuser(
+        <include refid="fieldlist"></include>
+        ) values(
+        #{quser_id},
+        #{task_index_id},
+        #{dept_id},
+        #{user_id},
+        #{dept_name},
+        #{user_name},
+        #{task_year},
+        #{task_quarter},
+        #{product_type},
+        #{chart_code},
+        #{chart_name},
+        #{chart_error},
+        #{chart_result},
+        #{work_days}
+        )
+    </insert>
+
+    <!-- 修改海图作业员个人质量测评信息 -->
+    <update id="updateMakeuserChartQualityInfo" parameterType="com.startest.wm.pojo.wm_quality_makeuser">
+        update wm_quality_makeuser set
+        dept_id=#{dept_id},
+        user_id=#{user_id},
+        dept_name=#{dept_name},
+        user_name=#{user_name},
+        task_year=#{task_year},
+        task_quarter=#{task_quarter},
+        product_type=#{product_type},
+        chart_code=#{chart_code},
+        chart_name=#{chart_name},
+        chart_error=#{chart_error},
+        chart_result=#{chart_result},
+        work_days=#{work_days} where quser_id=#{quser_id}
+    </update>
+
+    <!-- 删除海图作业员个人质量测评信息 -->
+    <delete id="deleteMakeuserChartQualityInfo" parameterType="String">
+        delete from wm_quality_makeuser where quser_id=#{strID}
+    </delete>
+</mapper>

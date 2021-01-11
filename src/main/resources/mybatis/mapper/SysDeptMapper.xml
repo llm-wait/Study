@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.SysDeptDao">
+    <!--新增部门-->
+    <insert id="insertDept" parameterType="com.startest.wm.pojo.sys_dept">
+        insert into sys_dept(dept_id,dept_pid,dept_name,dept_order,flag,remark)
+        values (#{dept_id},#{dept_pid},#{dept_name},#{dept_order},#{flag},#{remark})
+    </insert>
+
+    <!--删除部门-->
+    <delete id="deleteDept" parameterType="java.lang.String">
+        delete from sys_dept
+        where dept_id=#{dept_id}
+    </delete>
+
+    <!--更新部门-->
+    <update id="updateDept" parameterType="com.startest.wm.pojo.sys_dept">
+        update sys_dept
+        set dept_name=#{dept_name},dept_order=#{dept_order},flag=#{flag},remark=#{remark}
+        where dept_id=#{dept_id}
+    </update>
+
+    <!--根据ID查询部门-->
+    <select id="queryDeptByID" parameterType="java.lang.String" resultType="com.startest.wm.pojo.sys_dept">
+        select dept_id,dept_pid,dept_name,dept_order,flag,remark
+        from sys_dept
+        where dept_id=#{dept_id}
+    </select>
+
+    <!--根据根部门对象-->
+    <select id="queryRootDept" resultType="com.startest.wm.pojo.sys_dept">
+        select dept_id,dept_pid,dept_name,dept_order,flag,remark
+        from sys_dept
+        where dept_pid='-1'
+    </select>
+
+    <!--根据部门名称查询部门-->
+    <select id="queryDeptByName" parameterType="java.lang.String" resultType="com.startest.wm.pojo.sys_dept">
+        select dept_id,dept_pid,dept_name,dept_order,flag,remark
+        from sys_dept
+        where dept_name like concat('%',#{dept_name},'%')
+    </select>
+
+    <!--根据ID查询子部门-->
+    <select id="queryChildDeptByID" parameterType="java.lang.String" resultType="com.startest.wm.pojo.sys_dept">
+        select dept_id,dept_pid,dept_name,remark,dept_order,flag
+        from sys_dept
+        where  dept_pid=#{dept_id}
+        <if test="isAdmin==false">
+            and flag=1
+        </if>
+        order by dept_order
+    </select>
+
+    <!--查询所有部门-->
+    <select id="queryDeptAll" resultType="com.startest.wm.pojo.sys_dept">
+        select dept_id,dept_pid,dept_name,dept_order,flag,remark
+        from sys_dept
+        <if test="isAdmin==false">
+            where flag=1
+        </if>
+        order by dept_order
+    </select>
+
+    <!--根据部门ID查询岗位-->
+    <select id="queryStationByDeptID" parameterType="java.lang.String" resultType="com.startest.wm.pojo.sys_station">
+        select distinct B.*
+        from sys_dept_station_user A
+        inner join sys_station B on A.station_id=B.station_id
+        WHERE A.dept_id=#{dept_id}
+        order by B.station_order
+    </select>
+
+    <!--插入部门岗位人员关系记录-->
+    <insert id="insertDeptStationUserReal" parameterType="com.startest.wm.pojo.sys_dept_station_user">
+        insert into sys_dept_station_user(id,dept_id,station_id,user_id)
+        values (#{id},#{dept_id},#{station_id},#{user_id})
+    </insert>
+
+    <!--更新部门岗位人员关系记录-->
+    <update id="updateDeptStationUserReal">
+        update sys_dept_station_user
+        set
+        dept_id=#{dept_id},
+        station_id=#{station_id}
+        where id=#{id}
+    </update>
+
+    <!--获取部门岗位人员关系对象列表-->
+    <select id="getDeptStationUserReal" parameterType="java.lang.String"
+            resultType="com.startest.wm.pojo.sys_dept_station_user">
+        select id,dept_id,station_id,user_id
+        from sys_dept_station_user
+        where dept_id=#{dept_id}
+        and station_id=#{station_id}
+        and user_id=#{user_id}
+    </select>
+
+    <!--获取部门岗位人员关系对象列表-->
+    <select id="getDeptUserReals" resultType="com.startest.wm.pojo.sys_dept_station_user">
+        select id,dept_id,station_id,user_id
+        from sys_dept_station_user
+        where dept_id=#{dept_id}
+    </select>
+
+    <!--删除部门岗位人员关系记录-->
+    <delete id="deleteDeptStationUserReal" parameterType="java.lang.String">
+        delete from sys_dept_station_user
+        where dept_id=#{dept_id}
+        and station_id=#{station_id}
+        and user_id=#{user_id}
+    </delete>
+
+    <!--删除部门岗位人员关系记录-->
+    <delete id="deleteDeptStationUserReal2">
+        delete from sys_dept_station_user
+        where  user_id=#{user_id}
+    </delete>
+
+    <!--删除部门岗位下所有人员关系记录-->
+    <delete id="deleteDeptStationUserRealAll" parameterType="java.lang.String">
+        delete from sys_dept_station_user
+        where dept_id=#{dept_id}
+        and station_id=#{station_id}
+    </delete>
+
+    <!--查询部门岗位下所有人员-->
+    <select id="queryDeptStationUsers" parameterType="java.lang.String" resultType="com.startest.wm.pojo.sys_user">
+        select B.*
+        from sys_dept_station_user A
+        inner join sys_user B
+        on  A.user_id=B.user_id
+        where A.dept_id=#{deptID} and A.station_id=#{stationID}
+    </select>
+
+    <!--查询部门下所有人员-->
+    <select id="queryDeptAllUsers" parameterType="java.lang.String" resultType="com.startest.wm.pojo.sys_user">
+        select B.*
+        from sys_dept_station_user A
+        inner join sys_user B
+        on  A.user_id=B.user_id
+        where A.dept_id=#{deptID}
+    </select>
+
+    <!--判断部门是否已经存在-->
+    <select id="isDeptExist" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*)
+        from sys_dept
+        where dept_id!=#{dept_id} and dept_Pid=#{dept_Pid} and dept_name=#{dept_name}
+    </select>
+
+    <!--根据用户ID获取部门岗位人员关系记录-->
+    <select id="getSysDeptStationUser" parameterType="java.lang.String"
+            resultType="com.startest.wm.pojo.sys_dept_station_user">
+        select id,dept_id,station_id,user_id
+        from sys_dept_station_user
+        where user_id=#{user_id}
+    </select>
+
+
+    <!--根据用户登录名查询用户模型-->
+    <select id="queryUserModelByReal" resultType="com.startest.wm.model.SysUserModel">
+        SELECT d.dept_id as szbmID,s.station_id as szgwID,s.station_name as szgw,u.*
+        FROM sys_dept d
+        INNER JOIN sys_dept_station_user r
+        ON d.dept_id=r.dept_id
+        INNER JOIN sys_station s
+        ON r.station_id=s.station_id
+        INNER JOIN sys_user u
+        ON r.user_id=u.user_id
+        WHERE d.dept_id=#{deptID} and s.station_id=#{stationID}
+        ORDER BY u.user_login_name
+    </select>
+
+</mapper>

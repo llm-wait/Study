@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.SysFinalScoreDao">
+    <!--最终成绩结果字段-->
+    <sql id="finalScoreFields">
+        id,kpnf,user_id,user_name,dept_id,dept_name,station_name,sfzz,zb,rylb,hgl,hgldf,yxl,yxldf,yxgt,yxgtb,yxgtbdf,gctzsl,gctcsl,gctsl,gctkf,jsxgzsl,jsxgcsl,jsxgsl,jsxgkf,zlzdf,zlpm,edgt,gt,gtdf,gtb,gtbdf,gtzdf,gtpm,ywnl,gztd,nltdzf,nltdpm,cql,cqldf,xlcj,xlcjdf,bwcj,bwcjdf,ywxlzdf,ywxlpm,tbby,kpzf,kpzpm,pdjg,sfcykp,sfjg,errorinfo
+    </sql>
+
+    <!--插入最终成绩-->
+    <insert id="insertFinalScore" parameterType="com.startest.wm.pojo.sys_user_finalscore">
+        insert into sys_user_finalscore (
+        <include refid="finalScoreFields"/>
+        )values (
+        #{id},#{kpnf},#{user_id},#{user_name},#{dept_id},#{dept_name},#{station_name},#{sfzz},#{zb},#{rylb},#{hgl},#{hgldf},#{yxl},#{yxldf},#{yxgt},#{yxgtb},#{yxgtbdf},#{gctzsl},#{gctcsl},#{gctsl},#{gctkf},#{jsxgzsl},#{jsxgcsl},#{jsxgsl},#{jsxgkf},#{zlzdf},#{zlpm},#{edgt},#{gt},#{gtdf},#{gtb},#{gtbdf},#{gtzdf},#{gtpm},#{ywnl},#{gztd},#{nltdzf},#{nltdpm},#{cql},#{cqldf},#{xlcj},#{xlcjdf},#{bwcj},#{bwcjdf},#{ywxlzdf},#{ywxlpm},#{tbby},#{kpzf},#{kpzpm},#{pdjg},#{sfcykp},#{sfjg},#{errorinfo}
+        )
+    </insert>
+
+    <!--批量插入最终成绩-->
+    <insert id="insertFinalScoreMany">
+        insert into sys_user_finalscore (
+        <include refid="finalScoreFields"/>
+        )values
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.id},#{item.kpnf},#{item.user_id},#{item.user_name},#{item.dept_id},#{item.dept_name},#{item.station_name},#{item.sfzz},#{item.zb},#{item.rylb},#{item.hgl},#{item.hgldf},#{item.yxl},#{item.yxldf},#{item.yxgt},#{item.yxgtb},#{item.yxgtbdf},#{item.gctzsl},#{item.gctcsl},#{item.gctsl},#{item.gctkf},#{item.jsxgzsl},#{item.jsxgcsl},#{item.jsxgsl},#{item.jsxgkf},#{item.zlzdf},#{item.zlpm},#{item.edgt},#{item.gt},#{item.gtdf},#{item.gtb},#{item.gtbdf},#{item.gtzdf},#{item.gtpm},#{item.ywnl},#{item.gztd},#{item.nltdzf},#{item.nltdpm},#{item.cql},#{item.cqldf},#{item.xlcj},#{item.xlcjdf},#{item.bwcj},#{item.bwcjdf},#{item.ywxlzdf},#{item.ywxlpm},#{item.tbby},#{item.kpzf},#{item.kpzpm},#{item.pdjg},#{item.sfcykp},#{item.sfjg},#{item.errorinfo}
+            )
+        </foreach>
+    </insert>
+
+    <!--更新用户最终成绩信息-->
+    <update id="updateFinalScore">
+        update sys_user_finalscore
+        set kpzf=#{kpzf}
+        where id =#{id}
+    </update>
+
+    <!--批量更新用户最终成绩信息-->
+    <update id="updateFinalScoreMany" parameterType="list">
+        update sys_user_finalscore
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="zlpm =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    <if test="item.zlpm!=null">
+                        when id=#{item.id} then #{item.zlpm}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="gtpm =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    <if test="item.gtpm!=null">
+                        when id=#{item.id} then #{item.gtpm}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="nltdpm =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    <if test="item.nltdpm!=null">
+                        when id=#{item.id} then #{item.nltdpm}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="ywxlpm =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    <if test="item.ywxlpm!=null">
+                        when id=#{item.id} then #{item.ywxlpm}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="kpzpm =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    <if test="item.kpzpm!=null">
+                        when id=#{item.id} then #{item.kpzpm}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="pdjg =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    <if test="item.pdjg!=null">
+                        when id=#{item.id} then #{item.pdjg}
+                    </if>
+                </foreach>
+            </trim>
+        </trim>
+        where id in
+        <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+            #{item.id}
+        </foreach>
+    </update>
+
+    <!--更新评定结果-->
+    <update id="updateFinalScorePdjg">
+        update sys_user_finalscore set pdjg=#{pdjg} where id=#{id}
+    </update>
+
+    <!--根据年份和部门ID删除成绩信息-->
+    <delete id="deleteFinalScore">
+        delete from sys_user_finalscore where kpnf=#{year} and dept_id=#{deptID}
+    </delete>
+
+    <!--获取指定年份，指定部门的小组平均总成绩-->
+    <select id="getAvgScoreXiaoZu" resultType="java.lang.Double">
+        select avg(kpzf) as avg
+        from sys_user_finalscore
+        where sfcykp='是' and kpnf=#{kpnf} and dept_id=#{dept_id} and zb=#{zb} and sfzz='否'
+    </select>
+
+
+
+    <!--查询质量测评成绩(全体人员)-->
+    <select id="queryZlcpScore" resultType="com.startest.wm.model.score.ZlcpScoreModel">
+        select
+        id,user_id,user_name,station_name,sfzz,hgl,hgldf,yxl,yxldf,yxgt,yxgtb,yxgtbdf,gctkf,jsxgkf,zlzdf,zlpm
+        from sys_user_finalscore
+        <trim prefix="where" prefixOverrides="and|or">
+            kpnf=#{kpnf} and sfcykp='是'
+            <if test="dept_id!=''">
+                and dept_id=#{dept_id}
+            </if>
+            <if test="zb!='全体人员'">
+                and zb=#{zb}
+            </if>
+            <if test="rylb!='全体人员'">
+                and rylb=#{rylb}
+            </if>
+        </trim>
+        order by zlpm asc
+    </select>
+
+    <!--查询工天测评成绩(全体人员)-->
+    <select id="queryGtcpScore" resultType="com.startest.wm.model.score.GtcpScoreModel">
+        select
+        id,user_id,user_name,station_name,sfzz,gt,gtdf,gtb,gtbdf,gtzdf,gtpm
+        from sys_user_finalscore
+        <trim prefix="where" prefixOverrides="and|or">
+            kpnf=#{kpnf} and sfcykp='是'
+            <if test="dept_id!=''">
+                and dept_id=#{dept_id}
+            </if>
+            <if test="zb!='全体人员'">
+                and zb=#{zb}
+            </if>
+            <if test="rylb!='全体人员'">
+                and rylb=#{rylb}
+            </if>
+        </trim>
+        order by gtpm asc
+    </select>
+
+    <!--查询能力态度测评成绩(全体人员)-->
+    <select id="queryNltdcpScore" resultType="com.startest.wm.model.score.NltdcpScoreModel">
+        select
+        id,user_id,user_name,station_name,sfzz,ywnl,gztd,nltdzf,nltdpm
+        from sys_user_finalscore
+        <trim prefix="where" prefixOverrides="and|or">
+            kpnf=#{kpnf} and sfcykp='是'
+            <if test="dept_id!=''">
+                and dept_id=#{dept_id}
+            </if>
+            <if test="zb!='全体人员'">
+                and zb=#{zb}
+            </if>
+            <if test="rylb!='全体人员'">
+                and rylb=#{rylb}
+            </if>
+        </trim>
+        order by nltdpm asc
+    </select>
+
+    <!--查询业务训练测评成绩(全体人员)-->
+    <select id="queryYwxlcpScore" resultType="com.startest.wm.model.score.YwxlcpScoreModel">
+        select
+        id,user_id,user_name,station_name,sfzz,cql,cqldf,xlcj,xlcjdf,bwcj,bwcjdf,ywxlzdf,ywxlpm
+        from sys_user_finalscore
+        <trim prefix="where" prefixOverrides="and|or">
+            kpnf=#{kpnf} and sfcykp='是'
+            <if test="dept_id!=''">
+                and dept_id=#{dept_id}
+            </if>
+            <if test="zb!='全体人员'">
+                and zb=#{zb}
+            </if>
+            <if test="rylb!='全体人员'">
+                and rylb=#{rylb}
+            </if>
+        </trim>
+        order by ywxlpm asc
+    </select>
+
+    <!--查询综合测评成绩(全体人员)-->
+    <select id="queryZhcpScore" resultType="com.startest.wm.model.score.ZhcpScoreModel">
+        select
+        id,user_id,user_name,station_name,sfzz,hgl,hgldf,yxl,yxldf,yxgt,yxgtb,yxgtbdf,gctkf,jsxgkf,zlzdf,zlpm,gt,gtdf,gtb,gtbdf,gtzdf,gtpm,ywnl,gztd,nltdzf,nltdpm,cql,cqldf,xlcj,xlcjdf,bwcj,bwcjdf,ywxlzdf,ywxlpm,tbby,kpzf,kpzpm,pdjg
+        from sys_user_finalscore
+        <trim prefix="where" prefixOverrides="and|or">
+            kpnf=#{kpnf} and sfcykp='是'
+            <if test="dept_id!=''">
+                and dept_id=#{dept_id}
+            </if>
+            <if test="zb!='全体人员'">
+                and zb=#{zb}
+            </if>
+            <if test="rylb!='全体人员'">
+                and rylb=#{rylb}
+            </if>
+        </trim>
+        order by kpzpm asc
+    </select>
+
+
+    <!--查询质量测评成绩(专业类别)-->
+    <select id="queryZlcpScore2" resultType="com.startest.wm.model.score.ZlcpScoreModel">
+        select
+        A.id,A.user_id,A.user_name,A.zb,A.station_name,A.sfzz,A.hgl,A.hgldf,A.yxl,A.yxldf,A.yxgt,A.yxgtb,A.yxgtbdf,A.gctkf,A.jsxgkf,A.zlzdf,(
+        select count (distinct B.zlzdf)from sys_user_finalscore B where A.zlzdf &lt; B.zlzdf and A.zb=B.zb
+        )+1 as zlpm
+        from sys_user_finalscore A
+        <trim prefix="where" prefixOverrides="and|or">
+            kpnf=#{kpnf} and sfcykp='是'
+            <if test="dept_id!=''">
+                and dept_id=#{dept_id}
+            </if>
+            <if test="zb!='全体人员'">
+                and zb=#{zb}
+            </if>
+            <if test="rylb!='全体人员'">
+                and rylb=#{rylb}
+            </if>
+        </trim>
+        order by zb asc, zlpm asc
+    </select>
+
+    <!--查询工天测评成绩(专业类别)-->
+    <select id="queryGtcpScore2" resultType="com.startest.wm.model.score.GtcpScoreModel">
+        select
+        A.id,A.user_id,A.user_name,A.zb,A.station_name,A.sfzz,A.gt,A.gtdf,A.gtb,A.gtbdf,A.gtzdf,(
+        select count (distinct B.gtzdf)from sys_user_finalscore B where A.gtzdf &lt; B.gtzdf and A.zb=B.zb
+        )+1 as gtpm
+        from sys_user_finalscore A
+        <trim prefix="where" prefixOverrides="and|or">
+            kpnf=#{kpnf} and sfcykp='是'
+            <if test="dept_id!=''">
+                and dept_id=#{dept_id}
+            </if>
+            <if test="zb!='全体人员'">
+                and zb=#{zb}
+            </if>
+            <if test="rylb!='全体人员'">
+                and rylb=#{rylb}
+            </if>
+        </trim>
+        order by zb asc,gtpm asc
+    </select>
+
+    <!--查询能力态度测评成绩(专业类别)-->
+    <select id="queryNltdcpScore2" resultType="com.startest.wm.model.score.NltdcpScoreModel">
+        select
+        A.id,A.user_id,A.user_name,A.zb,A.station_name,A.sfzz,A.ywnl,A.gztd,A.nltdzf,(
+        select count (distinct B.nltdzf)from sys_user_finalscore B where A.nltdzf &lt; B.nltdzf and A.zb=B.zb
+        )+1 as nltdpm
+        from sys_user_finalscore A
+        <trim prefix="where" prefixOverrides="and|or">
+            kpnf=#{kpnf} and sfcykp='是'
+            <if test="dept_id!=''">
+                and dept_id=#{dept_id}
+            </if>
+            <if test="zb!='全体人员'">
+                and zb=#{zb}
+            </if>
+            <if test="rylb!='全体人员'">
+                and rylb=#{rylb}
+            </if>
+        </trim>
+        order by zb asc,nltdpm asc
+    </select>
+
+    <!--查询业务训练测评成绩(专业类别)-->
+    <select id="queryYwxlcpScore2" resultType="com.startest.wm.model.score.YwxlcpScoreModel">
+        select
+        A.id,A.user_id,A.user_name,A.zb,A.station_name,A.sfzz,A.cql,A.cqldf,A.xlcj,A.xlcjdf,A.bwcj,A.bwcjdf,A.ywxlzdf,(
+        select count (distinct B.ywxlzdf)from sys_user_finalscore B where A.ywxlzdf &lt; B.ywxlzdf and A.zb=B.zb
+        )+1 as ywxlpm
+        from sys_user_finalscore A
+        <trim prefix="where" prefixOverrides="and|or">
+            kpnf=#{kpnf} and sfcykp='是'
+            <if test="dept_id!=''">
+                and dept_id=#{dept_id}
+            </if>
+            <if test="zb!='全体人员'">
+                and zb=#{zb}
+            </if>
+            <if test="rylb!='全体人员'">
+                and rylb=#{rylb}
+            </if>
+        </trim>
+        order by zb asc,ywxlpm asc
+    </select>
+
+    <!--查询综合测评成绩(专业类别)-->
+    <select id="queryZhcpScore2" resultType="com.startest.wm.model.score.ZhcpScoreModel">
+        select
+        A.id,A.user_id,A.user_name,A.zb,A.station_name,A.sfzz,A.hgl,A.hgldf,A.yxl,A.yxldf,A.yxgt,A.yxgtb,A.yxgtbdf,A.gctkf,A.jsxgkf,A.zlzdf,A.zlpm,A.gt,A.gtdf,A.gtb,A.gtbdf,A.gtzdf,A.gtpm,A.ywnl,A.gztd,A.nltdzf,A.nltdpm,A.cql,A.cqldf,A.xlcj,A.xlcjdf,A.bwcj,A.bwcjdf,A.ywxlzdf,A.ywxlpm,A.tbby,A.kpzf,(
+        select count (distinct B.kpzf)from sys_user_finalscore B where A.kpzf &lt; B.kpzf and A.zb=B.zb
+        )+1 as kpzpm,A.pdjg
+        from sys_user_finalscore A
+        <trim prefix="where" prefixOverrides="and|or">
+            kpnf=#{kpnf} and sfcykp='是'
+            <if test="dept_id!=''">
+                and dept_id=#{dept_id}
+            </if>
+            <if test="zb!='全体人员'">
+                and zb=#{zb}
+            </if>
+            <if test="rylb!='全体人员'">
+                and rylb=#{rylb}
+            </if>
+        </trim>
+        order by zb asc,kpzpm asc
+    </select>
+
+
+    <!--查询最终成绩-->
+    <select id="queryFinalScore" resultType="com.startest.wm.pojo.sys_user_finalscore">
+        select
+        <include refid="finalScoreFields"/>
+        from sys_user_finalscore
+        <trim prefix="where" prefixOverrides="and|or">
+            kpnf=#{kpnf} and sfcykp='是'
+            <if test="dept_id!=''">
+                and dept_id=#{dept_id}
+            </if>
+            <if test="zb!='全体人员'">
+                and zb=#{zb}
+            </if>
+            <if test="rylb!='全体人员'">
+                and rylb=#{rylb}
+            </if>
+        </trim>
+        order by kpzpm asc
+    </select>
+
+    <!--获取作业室列表-->
+    <select id="getZysList" resultType="com.startest.wm.pojo.sys_user_finalscore">
+        select distinct dept_id, dept_name
+        from  sys_user_finalscore
+        where kpnf =#{year}
+        order by dept_name asc
+    </select>
+
+    <!--获取部门组别列表-->
+    <select id="getZysZbList" resultType="java.lang.String">
+        select distinct zb
+        from  sys_user_finalscore
+        where kpnf =#{year} and dept_id=#{deptID}
+        order by zb asc
+    </select>
+
+    <!--获取部门人员类别-->
+    <select id="getZysRylbList" resultType="java.lang.String">
+        select distinct rylb
+        from  sys_user_finalscore
+        where kpnf =#{year} and dept_id=#{deptID}
+        order by rylb asc
+    </select>
+
+    <!--计算作业室综合成绩排名和评定结果-->
+    <select id="calFinalScore" resultType="com.startest.wm.pojo.sys_user_finalscore">
+        SELECT
+        A.ID,A.kpnf,A.user_id,A.user_name,A.dept_id,A.dept_name,A.station_name,A.sfzz,A.zb,A.rylb,A.hgl,A.hgldf,A.yxl,A.yxldf,A.yxgt,A.yxgtb,A.yxgtbdf,A.gctzsl,A.gctcsl,A.gctsl,A.gctkf,A.jsxgzsl,A.jsxgcsl,A.jsxgsl,A.jsxgkf,A.zlzdf,A.edgt,A.gt,A.gtdf,A.gtb,A.gtbdf,A.gtzdf,A.ywnl,A.gztd,A.nltdzf,A.cql,A.cqldf,A.xlcj,A.xlcjdf,A.bwcj,A.bwcjdf,A.ywxlzdf,A.tbby,A.kpzf,A.sfcykp,A.sfjg,A.errorinfo,
+        ( SELECT COUNT ( DISTINCT B.zlzdf ) FROM sys_user_finalscore B WHERE A.zlzdf &lt; B.zlzdf ) + 1 AS zlpm,
+        ( SELECT COUNT ( DISTINCT B.gtzdf ) FROM sys_user_finalscore B WHERE A.gtzdf &lt; B.gtzdf ) + 1 AS gtpm,
+        ( SELECT COUNT ( DISTINCT B.nltdzf ) FROM sys_user_finalscore B WHERE A.nltdzf &lt; B.nltdzf ) + 1 AS nltdpm,
+        ( SELECT COUNT ( DISTINCT B.ywxlzdf ) FROM sys_user_finalscore B WHERE A.ywxlzdf &lt; B.ywxlzdf ) + 1 AS ywxlpm,
+        ( SELECT COUNT ( DISTINCT B.kpzf ) FROM sys_user_finalscore B WHERE A.kpzf &lt; B.kpzf ) + 1 AS kpzpm
+        FROM
+        sys_user_finalscore A
+        WHERE
+        A.kpnf = #{kpnf}
+        AND A.dept_id = #{dept_id}
+        ORDER BY
+        kpzpm
+    </select>
+
+</mapper>

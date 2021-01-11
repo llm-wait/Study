@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startest.wm.dao.ProductAssessmentDao">
+
+
+    <select id="chartProductSelect" parameterType="com.startest.wm.pojo.wm_quality_chart"
+    resultType="com.startest.wm.pojo.wm_quality_chart">
+        select * from "wm_quality_chart"
+        <where>
+            <if test="chartType != null and chartType != ''">
+                and chart_type=#{chartType}
+            </if>
+             <if test="start != null and start != '' and end != null and end != ''">
+                and task_year   between to_date(#{start},'YYYY-MM-DD')   and to_date(#{end},'YYYY-MM-DD')
+            </if>
+        </where>
+    </select>
+    <select id="sailingBookTableSelect" resultType="map">
+        select * from "wm_quality_book" a,"wm_task_index" b
+        <where>
+            b.index_id=a.task_index_id
+            <if test="start != null and start != '' and end != null and end != ''">
+                and a.task_year   between  to_date(#{start},'YYYY-MM-DD')  and to_date(#{end},'YYYY-MM-DD')
+            </if>
+        </where>
+</select>
+</mapper>
